@@ -1,0 +1,17 @@
+#!/bin/bash -eax
+
+proj() {
+  SRC=$HOME/cgta/orange/$1
+  DEST=$HOME/cgta/open/$1
+  if [[ -n "$1" ]] && [[ -d "$SRC" ]]; then
+    if [[ -d "$DEST" ]]; then
+      rm -r $DEST
+    fi
+    cp -r $SRC $DEST
+  fi
+}
+
+proj oscala
+proj serland
+proj cenum
+
