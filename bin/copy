@@ -21,10 +21,12 @@ proj() {
 }
 
 sbtfiles() {
-  cp $ORANGE/project/*.sbt $OPEN/project/
-  cp $ORANGE/project/*.scala $OPEN/project/
-  rm $OPEN/project/ClosedBuild.scala
-  rm $OPEN/project/ClosedPublish.scala
+  #Remove the Non O* files, build files just Open need to start with a capital O
+  rm $OPEN/project/[!O]*.scala
+  rm $OPEN/project/[!O]*.sbt
+  #Don't copy over files that start with a capital C (for Closed)
+  cp $ORANGE/project/[!C]*.sbt $OPEN/project/
+  cp $ORANGE/project/[!C]*.scala $OPEN/project/
 }
 
 proj oscala
