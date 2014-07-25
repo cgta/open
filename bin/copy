@@ -1,17 +1,36 @@
 #!/bin/bash -eax
 
+ORANGE=$HOME/cgta/orange
+OPEN=$HOME/cgta/open
+
+if [[ ! -d "$ORANGE" ]] || [[ ! -d "$OPEN" ]]; then
+  echo "Unable to find orange[$ORANGE] or open[$OPEN] dir"
+  exit 1
+fi
+
 proj() {
-  SRC=$HOME/cgta/orange/$1
-  DEST=$HOME/cgta/open/$1
+  SRC=$ORANGE/$1/src
+  DEST=$OPEN/$1
   if [[ -n "$1" ]] && [[ -d "$SRC" ]]; then
     if [[ -d "$DEST" ]]; then
       rm -r $DEST
     fi
+    mkdir -p $DEST/src
     cp -r $SRC $DEST
   fi
 }
 
+sbtfiles() {
+  cp $ORANGE/project/*.sbt $OPEN/project/
+  cp $ORANGE/project/*.scala $OPEN/project/
+  rm $OPEN/project/ClosedBuild.scala
+  rm $OPEN/project/ClosedPublish.scala
+}
+
 proj oscala
-proj serland
-proj cenum
+#proj serland
+#proj cenum
+sbtfiles
+
+
 
