@@ -22,16 +22,17 @@ proj() {
 
 sbtfiles() {
   #Remove the Non O* files, build files just Open need to start with a capital O
-  rm $OPEN/project/[!O]*.scala
-  rm $OPEN/project/[!O]*.sbt
+  rm -f $OPEN/project/[!O]*.scala
+  rm -f $OPEN/project/[!O]*.sbt
   #Don't copy over files that start with a capital C (for Closed)
+  mkdir -p $OPEN/project
   cp $ORANGE/project/[!C]*.sbt $OPEN/project/
   cp $ORANGE/project/[!C]*.scala $OPEN/project/
 }
 
 proj oscala
-#proj serland
-#proj cenum
+roj serland
+roj cenum
 sbtfiles
 
 
