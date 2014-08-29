@@ -11,4 +11,18 @@ object SharedProjects extends Build {
     .settingsSjs(libraryDependencies ++= Libs.sjs.dom)
     .tupledWithTests
 
+  //Serialization
+  lazy val (serlandX, serland, serlandJvm, serlandSjs, serlandJvmTest, serlandSjsTest) = crossProject("serland")
+    .dependsOn(oscalaX)
+    .settingsAll(macroSettings: _*)
+    .settingsJvm(libraryDependencies ++= Libs.mongo)
+    .tupledWithTests
+
+  //Enumeration
+  lazy val (cenumX, cenum, cenumJvm, cenumSjs, cenumJvmTest, cenumSjsTest) = crossProject("cenum")
+    .dependsOn(serlandX)
+    .settingsAll(macroSettings: _*)
+    .tupledWithTests
+
+
 }

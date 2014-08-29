@@ -1,19 +1,14 @@
-package cgta.oscala
-package sjs.extensions
+package cgta
 
-import scala.scalajs.js
-
+import cgta.oscala.OScalaExports
 
 //////////////////////////////////////////////////////////////
 // Copyright (c) 2014 Ben Jackman, Jeff Gomberg
 // All Rights Reserved
 // please contact ben@jackman.biz or jeff@cgtanalytics.com
 // for licensing inquiries
-// Created by bjackman @ 6/19/14 10:37 PM
+// Created by bjackman @ 5/8/14 3:40 PM
 //////////////////////////////////////////////////////////////
+package object cenum extends OScalaExports {
 
-class JsArrayExtensions[A](val xs : js.Array[A]) extends AnyVal {
-//  def toArray(implicit ev : ClassTag[A]) : Array[A] = {
-//    Array[A](xs.toSeq : _*)
-//  }
 }

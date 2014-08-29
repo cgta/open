@@ -1,7 +1,5 @@
 package cgta.oscala
-package sjs.extensions
-
-import scala.scalajs.js
+package util.debugging
 
 
 //////////////////////////////////////////////////////////////
@@ -9,11 +7,13 @@ import scala.scalajs.js
 // All Rights Reserved
 // please contact ben@jackman.biz or jeff@cgtanalytics.com
 // for licensing inquiries
-// Created by bjackman @ 6/19/14 10:37 PM
+// Created by bjackman @ 8/28/14 9:05 PM
 //////////////////////////////////////////////////////////////
 
-class JsArrayExtensions[A](val xs : js.Array[A]) extends AnyVal {
-//  def toArray(implicit ev : ClassTag[A]) : Array[A] = {
-//    Array[A](xs.toSeq : _*)
-//  }
+trait PRINT {
+  def |(msg : Any) : Unit
+}
+
+object PRINT extends PRINT with PrintPlat {
+
 }

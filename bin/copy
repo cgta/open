@@ -31,8 +31,8 @@ sbtfiles() {
 }
 
 proj oscala
-roj serland
-roj cenum
+proj serland
+proj cenum
 sbtfiles
 
 

@@ -1,0 +1,13 @@
+package cgta.serland
+
+
+//////////////////////////////////////////////////////////////
+// Created by bjackman @ 3/1/14 2:27 AM
+//////////////////////////////////////////////////////////////
+
+
+//object SerWritable extends SerBasics.Writable
+
+trait SerWritable[A] {
+  def write(a: A, out: SerOutput)
+}

@@ -1,7 +1,4 @@
-package cgta.oscala
-package sjs.extensions
-
-import scala.scalajs.js
+package cgta.cenum
 
 
 //////////////////////////////////////////////////////////////
@@ -9,11 +6,10 @@ import scala.scalajs.js
 // All Rights Reserved
 // please contact ben@jackman.biz or jeff@cgtanalytics.com
 // for licensing inquiries
-// Created by bjackman @ 6/19/14 10:37 PM
+// Created by bjackman @ 5/8/14 3:48 PM
 //////////////////////////////////////////////////////////////
 
-class JsArrayExtensions[A](val xs : js.Array[A]) extends AnyVal {
-//  def toArray(implicit ev : ClassTag[A]) : Array[A] = {
-//    Array[A](xs.toSeq : _*)
-//  }
+//See CEnumInitStrategyImpl for sjs vs jvm
+private[cenum] trait CEnumInitStrategy {
+  def initOrdinal[A <: CEnum](en: A, el : CEnum#EnumElement): Int
 }
