@@ -98,7 +98,7 @@ We generate the intellij project files with a script under the projects bin fold
 Also each project turns into 5 intellij modules: shared/jvm/sjs/jvm-test/sjs-test
 The basic project structure end up looking like this:
 
-http://imgur.com/rRDxYKI
+![Intellij Screenshot](http://i.imgur.com/rRDxYKI.png)
 
 
 # SBT builds
