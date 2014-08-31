@@ -115,6 +115,3 @@ to generate the files for intellij simply run
 
     bin/gen-idea
 
-# Feedback welcome
-
-Let me know what you think
