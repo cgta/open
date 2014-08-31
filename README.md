@@ -24,7 +24,7 @@ Here is a very simple example of use:
 1. (optional) Mix cgta.serland.SerlandExports into your package object this will add 
 toJsonCompact/toJsonPretty on any object with a SerClass and fromJson[A : SerClass] onto Strings
 
-2. for a case class make it a memeber of the SerClass typeclass by adding the following to it's companion
+2. For a case class make it a memeber of the SerClass typeclass by adding the following to it's companion
 
 ```scala
     import cgta.serland.{SerClass, SerBuilder}
@@ -34,7 +34,7 @@ toJsonCompact/toJsonPretty on any object with a SerClass and fromJson[A : SerCla
 ```
 
 3. To/From Json example
-
+ 
 ```scala
     val str = Point(1,2).toJsonCompact // yields {"x":1,"y":2}
     val pnt = str.fromJson[Point] // yields Point(1,2)
@@ -42,6 +42,12 @@ toJsonCompact/toJsonPretty on any object with a SerClass and fromJson[A : SerCla
     import cgta.serland.backends.{SerJsonOut, SerJsonIn}
     val str = SerJsonOut.toJsonCompact(x) // yields {"x":1,"y":2}
     val pnt = SerJsonIn.fromJsonString[Point](x) // yields Point(1,2)
+```
+
+4. Generate a random instance for unit testing
+
+```scala
+    val rnd = Point.ser.gen.sample.get
 ```
 
 ## CGTA/cenum
