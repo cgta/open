@@ -108,11 +108,12 @@ organizing cross builds.
 # Try it out!
 
     git clone https://github.com/cgta/open
-    bin/gen-idea
-
-to run all the scala-sjs / scala-jvm tests:
-
     sbt test
+    
+
+to generate the files for intellij simply run
+
+    bin/gen-idea
 
 # Feedback welcome
 
