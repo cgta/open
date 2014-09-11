@@ -1,12 +1,10 @@
 import sbt.Keys._
 import sbt._
 import sbtrelease.ReleasePlugin.ReleaseKeys
-import sbtrelease.Version
+import sbtrelease.{ReleasePlugin, Version}
 
 object Publish {
-
-
-  val settings = Seq[Setting[_]](
+  lazy val settings = Seq[Setting[_]](
     organization := "biz.cgta",
     publishTo := {
       val nexus = "https://oss.sonatype.org/"
@@ -39,6 +37,6 @@ object Publish {
 
   )
 
-  val settingsJvm = settings
-  val settingsSjs = settings
+  lazy val settingsJvm = settings ++ ReleasePlugin.releaseSettings
+  lazy val settingsSjs = settings ++ ReleasePlugin.releaseSettings
 }
