@@ -20,8 +20,8 @@ object IOResults {
     override def isEOF = true
     override def map[B](f: (Nothing) => B): IOResult[B] = EOF
   }
-  case class Line[A](s: A) extends IOResult[A] {
+  case class IOData[A](s: A) extends IOResult[A] {
     override def isLine = true
-    override def map[B](f: (A) => B): IOResult[B] = Line(f(s))
+    override def map[B](f: (A) => B): IOResult[B] = IOData(f(s))
   }
 }

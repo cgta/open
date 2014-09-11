@@ -17,10 +17,10 @@ sealed abstract class Arbitrary[T] {
   val arbitrary: Gen[T]
 }
 
-/** Defines implicit [[org.scalacheck.Arbitrary]] instances for common types.
+/** Defines implicit [[cgta.serland.gen.Arbitrary]] instances for common types.
  *  <p>
  *  ScalaCheck
- *  uses implicit [[org.scalacheck.Arbitrary]] instances when creating properties
+ *  uses implicit [[cgta.serland.gen.Arbitrary]] instances when creating properties
  *  out of functions with the `Prop.property` method, and when
  *  the `Arbitrary.arbitrary` method is used. For example, the
  *  following code requires that there exists an implicit
@@ -49,7 +49,7 @@ sealed abstract class Arbitrary[T] {
  *  </p>
  *
  *  <p>
- *  The `Arbitrary` module defines implicit [[org.scalacheck.Arbitrary]]
+ *  The `Arbitrary` module defines implicit [[cgta.serland.gen.Arbitrary]]
  *  instances for common types, for convenient use in your properties and
  *  generators.
  *  </p>
@@ -224,7 +224,7 @@ object Arbitrary {
 
   // Higher-order types //
 
-  /** Arbitrary instance of [[org.scalacheck.Gen]] */
+  /** Arbitrary instance of [[cgta.serland.gen.Gen]] */
   implicit def arbGen[T](implicit a: Arbitrary[T]): Arbitrary[Gen[T]] =
     Arbitrary(frequency(
       (5, arbitrary[T] map (const(_))),
@@ -245,14 +245,14 @@ object Arbitrary {
   implicit def arbEither[T, U](implicit at: Arbitrary[T], au: Arbitrary[U]): Arbitrary[Either[T, U]] =
     Arbitrary(oneOf(arbitrary[T].map(Left(_)), arbitrary[U].map(Right(_))))
 
-  /** Arbitrary instance of any [[org.scalacheck.util.Buildable]] container
+  /** Arbitrary instance of any [[cgta.serland.gen.util.Buildable]] container
    *  (such as lists, arrays, streams, etc). The maximum size of the container
    *  depends on the size generation parameter. */
   implicit def arbContainer[C[_],T](implicit
     a: Arbitrary[T], b: Buildable[T,C], t: C[T] => Traversable[T]
   ): Arbitrary[C[T]] = Arbitrary(containerOf[C,T](arbitrary[T]))
 
-  /** Arbitrary instance of any [[org.scalacheck.util.Buildable2]] container
+  /** Arbitrary instance of any [[cgta.serland.gen.util.Buildable2]] container
    *  (such as maps, etc). The maximum size of the container depends on the size
    *  generation parameter. */
   implicit def arbContainer2[C[_,_],T,U](implicit

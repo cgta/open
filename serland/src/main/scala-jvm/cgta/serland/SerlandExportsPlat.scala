@@ -1,7 +1,4 @@
-package cgta.oscala
-package util.debugging
-
-import scala.scalajs.js
+package cgta.serland
 
 
 //////////////////////////////////////////////////////////////
@@ -9,12 +6,7 @@ import scala.scalajs.js
 // All Rights Reserved
 // please contact ben@jackman.biz or jeff@cgtanalytics.com
 // for licensing inquiries
-// Created by bjackman @ 8/28/14 9:07 PM
+// Created by bjackman @ 9/10/14 1:16 AM
 //////////////////////////////////////////////////////////////
 
-
-trait PrintPlat extends PRINT {
-  override final def |(msg: Any) {
-    js.Dynamic.global.console.log(msg.asInstanceOf[js.Any])
-  }
-}
+trait SerlandExportsPlat

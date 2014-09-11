@@ -1,6 +1,7 @@
 package cgta
 
-import cgta.oscala.OScalaExports
+import cgta.oscala.{OScalaExportsPlat, OScalaExportsShared}
+import cgta.serland.{SerlandExportsPlat, SerlandExportsShared}
 
 //////////////////////////////////////////////////////////////
 // Copyright (c) 2014 Ben Jackman, Jeff Gomberg
@@ -9,6 +10,7 @@ import cgta.oscala.OScalaExports
 // for licensing inquiries
 // Created by bjackman @ 5/8/14 3:40 PM
 //////////////////////////////////////////////////////////////
-package object cenum extends OScalaExports {
-
-}
+package object cenum  extends SerlandExportsShared
+with SerlandExportsPlat
+with OScalaExportsShared
+with OScalaExportsPlat

@@ -8,7 +8,7 @@ import cgta.oscala.extensions.{DoubleExtensions, IteratorExtensions, BooleanExte
 //////////////////////////////////////////////////////////////
 
 
-trait OScalaExports {
+trait OScalaExportsShared {
 
   /**
    * Scala type aliases
@@ -53,17 +53,17 @@ trait OScalaExports {
   /**
    * Extensions
    */
-  implicit def arrayExtensions[A](a: Array[A]): ArrayExtensions[A] = new ArrayExtensions[A](a)
-  implicit def booleanExtensions[A](a: Boolean): BooleanExtensions = new BooleanExtensions(a)
-  implicit def typeAExtensions[A](a: A): TypeAExtensions[A] = new TypeAExtensions[A](a)
-  implicit def byteExtensions(a: Byte): ByteExtensions = new ByteExtensions(a)
-  implicit def intExtensions(a: Int): IntExtensions = new IntExtensions(a)
-  implicit def doubleExtensions(a: Double): DoubleExtensions = new DoubleExtensions(a)
-  implicit def stringExtensions(a: String): StringExtensions = new StringExtensions(a)
-  implicit def iMapExtensions[A, B](a: IMap[A, B]): IMapExtensions[A, B] = new IMapExtensions[A, B](a)
-  implicit def seqExtensions[A](a: Seq[A]): SeqExtensions[A] = new SeqExtensions[A](a)
-  implicit def itrExtensions[A](a: Iterator[A]): IteratorExtensions[A] = new IteratorExtensions[A](a)
-  implicit def func1Extensions[A, B](a: Function[A, B]): Func1Extensions[A, B] = new Func1Extensions[A, B](a)
+  implicit def addOScalaArrayExtensions[A](a: Array[A]): ArrayExtensions[A] = new ArrayExtensions[A](a)
+  implicit def addOScalaBooleanExtensions[A](a: Boolean): BooleanExtensions = new BooleanExtensions(a)
+  implicit def addOScalaTypeAExtensions[A](a: A): TypeAExtensions[A] = new TypeAExtensions[A](a)
+  implicit def addOScalaByteExtensions(a: Byte): ByteExtensions = new ByteExtensions(a)
+  implicit def addOScalaIntExtensions(a: Int): IntExtensions = new IntExtensions(a)
+  implicit def addOScalaDoubleExtensions(a: Double): DoubleExtensions = new DoubleExtensions(a)
+  implicit def addOScalaStringExtensions(a: String): StringExtensions = new StringExtensions(a)
+  implicit def addOScalaIMapExtensions[A, B](a: IMap[A, B]): IMapExtensions[A, B] = new IMapExtensions[A, B](a)
+  implicit def addOScalaSeqExtensions[A](a: Seq[A]): SeqExtensions[A] = new SeqExtensions[A](a)
+  implicit def addOScalaItrExtensions[A](a: Iterator[A]): IteratorExtensions[A] = new IteratorExtensions[A](a)
+  implicit def addOScalaFunc1Extensions[A, B](a: Function[A, B]): Func1Extensions[A, B] = new Func1Extensions[A, B](a)
 
 
   def error(msg: String): Nothing = sys.error(msg)

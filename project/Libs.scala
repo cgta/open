@@ -35,11 +35,4 @@ object Libs {
 
   val weka = Seq("nz.ac.waikato.cms.weka" % "weka-dev" % "3.7.11")
 
-  object sjs {
-    import scala.scalajs.sbtplugin.ScalaJSPlugin._
-    val dom = Seq("org.scala-lang.modules.scalajs" %%% "scalajs-dom" % "0.6")
-    //      val jquery    = Seq("org.scala-lang.modules.scalajs" %%% "scalajs-jquery" % "0.6")
-    val scalatags = Seq("com.scalatags" %%% "scalatags" % "0.3.8")
-  }
-
 }

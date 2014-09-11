@@ -1,4 +1,4 @@
-CGTA/open
+CGTA/open 0.1.0
 ====
 
 Open Source CGTA Libraries
@@ -52,6 +52,8 @@ toJsonCompact/toJsonPretty on any object with a SerClass and fromJson[A : SerCla
 
 ## CGTA/cenum
 The enumeration type we built and use in house.
+It features exhaustive match checking, and is supported
+by the serland serialization library
 ```scala
     object Fruits extends CEnum {
       type EET = Fruit
@@ -121,3 +123,13 @@ to generate the files for intellij simply run
 
     bin/gen-idea
 
+
+# Use it as a dependency in ScalaJs or ScalaJvm
+
+    "biz.cgta" %% "oscala-jvm" % "0.1.0"
+    "biz.cgta" %% "cenum-jvm" % "0.1.0"
+    "biz.cgta" %% "serland-jvm" % "0.1.0"
+
+    "biz.cgta" %%% "oscala-sjs" % "0.1.0"
+    "biz.cgta" %%% "cenum-sjs" % "0.1.0"
+    "biz.cgta" %%% "serland-sjs" % "0.1.0"

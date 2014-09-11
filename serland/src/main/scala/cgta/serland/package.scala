@@ -1,7 +1,8 @@
 package cgta
 
 import java.util.concurrent.locks.Lock
-import cgta.oscala.OScalaExports
+
+import oscala.{OScalaExportsPlat, OScalaExportsShared}
 
 //////////////////////////////////////////////////////////////
 // Copyright (c) 2013 Ben Jackman, Jeff Gomberg
@@ -11,7 +12,10 @@ import cgta.oscala.OScalaExports
 // Created by bjackman @ 9/24/13 11:45 PM
 //////////////////////////////////////////////////////////////
 
-package object serland extends SerlandExports with OScalaExports {
+package object serland extends SerlandExportsShared
+with SerlandExportsPlat
+with OScalaExportsShared
+with OScalaExportsPlat {
 
   def withLock[A](lock: Lock)(blk: => A) = {
     try {

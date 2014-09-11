@@ -9,7 +9,7 @@ import cgta.serland.backends.{SerJsonOut, SerJsonIn}
 
 
 
-object SerlandExports {
+object SerlandExportsShared {
   class SerlandTypeAExtensions[A](val x: A) extends AnyVal {
     def toJsonCompact()(implicit ev: SerClass[A]): String = SerJsonOut.toJsonCompact(x)
     def toJsonPretty()(implicit ev: SerClass[A]): String = SerJsonOut.toJsonPretty(x)
@@ -24,10 +24,13 @@ object SerlandExports {
  * Mix this into your package object, or whatever you import typically to provide some handy
  * serclass specific implicits
  */
-trait SerlandExports {
-  implicit def toSerlandTypeAExtensions[A](x : A) = new SerlandExports.SerlandTypeAExtensions[A](x)
-  implicit def toSerlandStringExtensions(x : String) = new SerlandExports.SerlandStringExtensions(x)
+trait SerlandExportsShared {
+  implicit def addSerlandTypeAExtensions[A](x : A) = new SerlandExportsShared.SerlandTypeAExtensions[A](x)
+  implicit def addSerlandStringExtensions(x : String) = new SerlandExportsShared.SerlandStringExtensions(x)
 
   def serClass[A : SerClass] = implicitly[SerClass[A]]
   def serSchema[A : SerClass] = implicitly[SerClass[A]].schema
 }
+
+//This doesn't work, intellij get's confused and will pick an aribtrary plat here
+//trait SerlandExports extends SerlandExportsShared with SerlandExportsPlat

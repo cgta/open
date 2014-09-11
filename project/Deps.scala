@@ -38,7 +38,7 @@ object Deps {
 
     override val base: Seq[Setting[_]] = Seq[Setting[_]](
       //Remember to set in the otestSbtPlugin.sbt file!!
-      otestVersion := "0.1.11"
+      otestVersion := "0.1.12"
     )
 
     override val jvm: Seq[Setting[_]] = Seq[Setting[_]](
@@ -102,6 +102,51 @@ object Deps {
       libraryDependencies += "org.mongodb" % "mongo-java-driver" % mongoVersion.value
     )
   }
+
+  //  object sjs {
+  //    import scala.scalajs.sbtplugin.ScalaJSPlugin._
+  //    val dom = Seq("org.scala-lang.modules.scalajs" %%% "scalajs-dom" % "0.6")
+  //    val jquery    = Seq("org.scala-lang.modules.scalajs" %%% "scalajs-jquery" % "0.6")
+  //    val scalatags = Seq("com.scalatags" %%% "scalatags" % "0.3.8")
+  //  }
+
+  case object Dom extends Dep {
+    import scala.scalajs.sbtplugin.ScalaJSPlugin._
+    val domVersion = SettingKey[String]("dom-version")
+    override val settings: Seq[Setting[_]] = Seq[Setting[_]](
+      domVersion := "0.6",
+      libraryDependencies += "org.scala-lang.modules.scalajs" %%% "scalajs-dom" % domVersion.value
+    )
+  }
+
+  case object JQuery extends Dep {
+    import scala.scalajs.sbtplugin.ScalaJSPlugin._
+    val jqueryVersion = SettingKey[String]("jquery-version")
+    override val settings: Seq[Setting[_]] = Seq[Setting[_]](
+      jqueryVersion := "0.6",
+      libraryDependencies += "org.scala-lang.modules.scalajs" %%% "scalajs-jquery" % jqueryVersion.value
+    )
+  }
+
+
+//  case object Scalatags extends Dep {
+//    import scala.scalajs.sbtplugin.ScalaJSPlugin._
+//    val scalatagsVersion = SettingKey[String]("scalatags-version")
+//    override val settings: Seq[Setting[_]] = Seq[Setting[_]](
+//      scalatagsVersion := "0.4.0",
+//      libraryDependencies += "com.scalatags" %%% "scalatags" % scalatagsVersion.value
+//    )
+//  }
+
+  case object ScalaJsReact extends Dep {
+    import scala.scalajs.sbtplugin.ScalaJSPlugin._
+    val scalaJsReactVersion = SettingKey[String]("scala-js-react-version")
+    override val settings: Seq[Setting[_]] = Seq[Setting[_]](
+      scalaJsReactVersion := "0.4.0",
+      libraryDependencies += "com.github.japgolly.scalajs-react" %%% "core" % scalaJsReactVersion.value
+    )
+  }
+
 
   //  case object Logback extends Dep {
   //    val logbackVersion = SettingKey[String]("logback-version")

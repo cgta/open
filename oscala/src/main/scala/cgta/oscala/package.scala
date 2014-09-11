@@ -4,6 +4,4 @@ package cgta
 // Created by bjackman @ 4/23/14 8:58 AM
 //////////////////////////////////////////////////////////////
 
-package object oscala extends OScalaExports with OScalaExportsPlat {
-
-}
+package object oscala extends OScalaExportsShared with OScalaExportsPlat

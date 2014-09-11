@@ -62,26 +62,27 @@ object BaseBuild extends Build with UniversalKeys {
 
   def sjsProject(name: String, p: Project) = {
     //Working around bugs in scala atm
-    def fixPhantomJsSetting = {
-      import scala.collection.JavaConverters._
-      import scala.scalajs.sbtplugin.ScalaJSPlugin._
-      import scala.scalajs.sbtplugin.env.nodejs.NodeJSEnv
-      import scala.scalajs.sbtplugin.env.phantomjs.PhantomJSEnv
-      val env = System.getenv().asScala.toList.map { case (k, v) => s"$k=$v"}
-      ScalaJSKeys.postLinkJSEnv := {if (ScalaJSKeys.requiresDOM.value) new PhantomJSEnv(None, env) else new NodeJSEnv}
-    }
+//    def fixPhantomJsSetting = {
+//      import scala.collection.JavaConverters._
+//      import scala.scalajs.sbtplugin.ScalaJSPlugin._
+//      import scala.scalajs.sbtplugin.env.nodejs.NodeJSEnv
+//      import scala.scalajs.sbtplugin.env.phantomjs.PhantomJSEnv
+//      val env = System.getenv().asScala.toList.map { case (k, v) => s"$k=$v"}
+//      ScalaJSKeys.postLinkJSEnv := {if (ScalaJSKeys.requiresDOM.value) new PhantomJSEnv(None, env) else new NodeJSEnv}
+//    }
 
     p.settings(basicSettings ++ ScalaJSPlugin.scalaJSSettings: _*)
       .settings(scalacOptions += "-language:reflectiveCalls")
       .settings(SbtIdeaPlugin.ideaBasePackage := Some(getBasePackageName(name, "-sjs")))
       .settings(Deps.Otest.settingsSjs : _*)
       .settings(cgta.otest.OtestPlugin.settingsSjs: _ *)
-      .settings(publish := {})
+      .settings(Publish.settings: _*)
+      .settings(ReleasePlugin.releaseSettings: _*)
       .settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
       .settings(test in Test := (test in(Test, ScalaJSKeys.fastOptStage)).value)
       .settings(testOnly in Test := (testOnly in(Test, ScalaJSKeys.fastOptStage)).evaluated)
       .settings(testQuick in Test := (testQuick in(Test, ScalaJSKeys.fastOptStage)).evaluated)
-      .settings(fixPhantomJsSetting)
+//      .settings(fixPhantomJsSetting)
   }
 
   def jvmProject(name: String, p: Project) = {

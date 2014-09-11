@@ -45,8 +45,6 @@ object Slurp {
     }
   }
 
-  def tailer(is : InputStream) = new Tailer(is)
-
 }
 
 

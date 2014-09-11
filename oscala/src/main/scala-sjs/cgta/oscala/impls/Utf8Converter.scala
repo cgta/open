@@ -49,17 +49,17 @@ object Utf8Converter {
       val c1 = bytes(pos).toInt & 0xFF
       pos += 1
       if (c1 < 128) {
-        out.push(global.String.fromCharCode(c1).asInstanceOf[js.String])
+        out.push(js.Dynamic.global.String.fromCharCode(c1).asInstanceOf[js.String])
       } else if (c1 > 191 && c1 < 224) {
         val c2 = bytes(pos)
         pos += 1
-        out.push(global.String.fromCharCode((c1 & 31) << 6 | c2 & 63).asInstanceOf[js.String])
+        out.push(js.Dynamic.global.String.fromCharCode((c1 & 31) << 6 | c2 & 63).asInstanceOf[js.String])
       } else {
         val c2 = bytes(pos)
         pos += 1
         val c3 = bytes(pos)
         pos += 1
-        out.push(global.String.fromCharCode((c1 & 15) << 12 | (c2 & 63) << 6 | c3 & 63).asInstanceOf[js.String])
+        out.push(js.Dynamic.global.String.fromCharCode((c1 & 15) << 12 | (c2 & 63) << 6 | c3 & 63).asInstanceOf[js.String])
       }
     }
     out.join("").toString

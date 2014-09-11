@@ -16,9 +16,8 @@ import scala.language.dynamics
 import scala.scalajs.js
 
 
-
 class JsSetAll[A <: js.Any](val x: A) extends scala.Dynamic {
-  def applyDynamicNamed(name: java.lang.String)(fields: (java.lang.String, Any)*) : A = {
+  def applyDynamicNamed(name: java.lang.String)(fields: (java.lang.String, Any)*): A = {
     if (name != "apply") {
       sys.error("only apply method is supported")
     }
@@ -32,13 +31,16 @@ class JsSetAll[A <: js.Any](val x: A) extends scala.Dynamic {
 
 trait OScalaExportsPlat {
 
-  val global    = js.Dynamic.global
-  val console   = global.console.asInstanceOf[JsConsole]
-  val JSON      = global.JSON
-  val undefined = global.undefined
-  val window    = global.window
-  val document  = org.scalajs.dom.document
+  //  val console   = org.scalajs.dom.window.console
+  //Results in
 
+
+  def global   = js.Dynamic.global
+  def console  = js.Dynamic.global.console
+  def JSON     = js.JSON
+  def undefined = js.undefined
+  def window   = org.scalajs.dom.window
+  def document = org.scalajs.dom.document
 
   def newObject = js.Object().asInstanceOf[js.Dynamic]
   def newJs(clazz: js.Dynamic)(args: js.Any*): js.Dynamic = js.Dynamic.newInstance(clazz)(args: _*)
@@ -60,11 +62,15 @@ trait OScalaExportsPlat {
   implicit def sjsArrayExtensions[A](a: Array[A]) = new SjsArrayExtensions[A](a)
   implicit def sjsSeqExtensions[A](a: Seq[A]) = new SjsSeqExtensions[A](a)
 
+  //Functions can be used for higher arities
+  implicit def jsF0isF1[A, R](f: js.Function0[R]): js.Function1[Any, R] = f.asInstanceOf[js.Function1[Any, R]]
+  implicit def f0isJsF1[A, R](f: () => R): js.Function1[Any, R] = jsF0isF1(f: js.Function0[R])
+
+
   //  val * = js.Dynamic.literal
   //  type * = js.Dynamic
   //  type ** = js.Object with js.Dynamic
   //  def log(args: js.Any*) = console.log(args: _*)
-
 
 
   //  implicit object QueueExecutionContext extends ExecutionContext {

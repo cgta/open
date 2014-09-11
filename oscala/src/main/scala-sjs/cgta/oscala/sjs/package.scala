@@ -5,4 +5,4 @@ package cgta.oscala
 //////////////////////////////////////////////////////////////
 
 
-package object sjs extends OScalaExports with OScalaExportsPlat
+package object sjs extends OScalaExportsShared with OScalaExportsPlat

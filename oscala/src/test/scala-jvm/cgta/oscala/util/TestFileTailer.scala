@@ -1,9 +1,9 @@
 package cgta.oscala
 package util
 
-import java.io.{ByteArrayInputStream, InputStream}
+import java.io.{FileOutputStream, File, ByteArrayInputStream, InputStream}
 
-import cgta.oscala.util.IOResults.{EOF, Line, IOResult}
+import util.IOResults.{IOData, EOF, IOResult}
 import cgta.otest.FunSuite
 
 import scala.annotation.tailrec
@@ -19,9 +19,9 @@ import scala.util.Random
 // Created by bjackman @ 7/11/14 6:45 PM
 //////////////////////////////////////////////////////////////
 
-object TestTailer extends FunSuite {
+object TestFileTailer extends FunSuite {
   test("Basic") {
-    def generateSample: (String, Seq[IOResult[String]]) = {
+    def generateSample: (String, IVec[IOResult[IVec[String]]]) = {
       //Make a file randomly divided into segments that will be block locations
       //Make sure that the StreamTailer returns the proper combination of lines
       //Make different kinds of lines representing different places there can be pauses
@@ -39,21 +39,32 @@ object TestTailer extends FunSuite {
       )
       val randy = new Random(12345)
       val file = (0 until 100).map(i => samples(randy.nextInt(samples.size))).mkString + "ppp"
-      val expectedBuf = new ArrayBuffer[IOResult[String]]
+      val expectedBuf = new ArrayBuffer[IOResult[IVec[String]]]
+      val groupBuf = new ArrayBuffer[String]
       val ss = new ByteArrayInputStream(file.getBytesUTF8)
       val lineSb = new StringBuilder()
+
+      def retireGroupBuf() {
+        if (groupBuf.nonEmpty) {
+          expectedBuf += IOData(groupBuf.toVector)
+          groupBuf.clear()
+        }
+      }
+
 
       @tailrec
       def loop() {
         val b = ss.read()
         if (b == -1) {
           //Done
+          retireGroupBuf()
           expectedBuf += EOF
         } else {
           if (b == 'p'.toByte) {
+            retireGroupBuf()
             expectedBuf += EOF
           } else if (b == '\n'.toByte) {
-            expectedBuf += Line(lineSb.toString())
+            groupBuf += lineSb.toString()
             lineSb.clear()
           } else {
             lineSb += b.toChar
@@ -63,41 +74,47 @@ object TestTailer extends FunSuite {
       }
       loop()
 
-      file -> expectedBuf.toIndexedSeq
+      file -> expectedBuf.toVector
     }
 
-    def capture(fileContent: String): Seq[IOResult[String]] = {
+    def capture(fileContent: String): IVec[IOResult[IVec[String]]] = {
       var streamDone = false
       val bs = fileContent.getBytesUTF8.iterator
-      val stream = new InputStream {
-        override def read(): Int = {
-          if (bs.hasNext) {
-            val b = bs.next()
-            if (b == 'p'.toByte) {
-              -1
-            } else {
-              b
-            }
+      val tmpFile = File.createTempFile("unit-test", "tmp")
+      val fos = new FileOutputStream(tmpFile)
+      @tailrec
+      def advanceStream() {
+        if (bs.hasNext) {
+          val b = bs.next()
+          if (b == 'p'.toByte) {
           } else {
-            streamDone = true
-            -1
+            fos.write(b)
+            advanceStream()
           }
+        } else {
+          streamDone = true
         }
       }
-
-      val tailer = new Tailer(stream)
-      val res = new ArrayBuffer[IOResult[String]]
+      val tailer = new FileTailer(tmpFile.getPath)
+      val res = new ArrayBuffer[IOResult[IVec[String]]]
       @tailrec
       def loop() {
-        val r = tailer.next()
-        res += r
+        advanceStream()
+        def loop2() {
+          val r = tailer.next().map(lines => lines.map(Utf8Help.fromBytes _))
+          res += r
+          if (!r.isEOF) {
+            loop2()
+          }
+        }
+        loop2()
         //Keep looping until we have exhausted the real underlying stream
-        if (!r.isEOF || !streamDone) {
+        if (!streamDone) {
           loop()
         }
       }
       loop()
-      res.toIndexedSeq
+      res.toVector
     }
     val (fileContent, expected) = generateSample
     Assert.isEquals(expected, capture(fileContent))
