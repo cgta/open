@@ -1,9 +1,20 @@
-import sbt.Keys._
 import sbt._
-import sbtrelease.ReleasePlugin.ReleaseKeys
-import sbtrelease.{ReleasePlugin, Version}
+import sbt.Keys._
+import sbtrelease._
+import ReleaseStateTransformations._
+import ReleasePlugin._
+import ReleaseKeys._
+import Utilities._
+import com.typesafe.sbt.SbtPgp.PgpKeys._
 
 object Publish {
+  lazy val publishSignedAction = { st: State =>
+    val extracted = st.extract
+    val ref = extracted.get(thisProjectRef)
+    extracted.runAggregated(publishSigned in Global in ref, st)
+  }
+
+
   lazy val settings = Seq[Setting[_]](
     organization := "biz.cgta",
     publishTo := {
@@ -15,6 +26,19 @@ object Publish {
     },
     (publishArtifact in Test) := false,
     pomIncludeRepository := { _ => false},
+    releaseProcess := Seq[ReleaseStep](
+      checkSnapshotDependencies,
+      inquireVersions,
+      runClean,
+      runTest,
+      setReleaseVersion,
+      commitReleaseVersion,
+      tagRelease,
+      publishArtifacts.copy(action = publishSignedAction),
+      setNextVersion,
+      commitNextVersion,
+      pushChanges
+    ),
     pomExtra :=
       <url>https://github.com/cgta/otest</url>
         <licenses>
@@ -35,8 +59,10 @@ object Publish {
           </developer>
         </developers>
 
+
   )
 
-  lazy val settingsJvm = settings ++ ReleasePlugin.releaseSettings
-  lazy val settingsSjs = settings ++ ReleasePlugin.releaseSettings
+
+  lazy val settingsJvm = ReleasePlugin.releaseSettings ++ settings
+  lazy val settingsSjs = ReleasePlugin.releaseSettings ++ settings
 }
