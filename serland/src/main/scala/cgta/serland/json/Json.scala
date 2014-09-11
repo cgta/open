@@ -2,15 +2,15 @@ package cgta.serland.json
 
 import scala.annotation.switch
 
-  /**
-   * (Adapted from one of lihaoyi's repo's
-   * 
-   * in turn
-   * 
-   * Self-contained JSON parser adapted from
-   *
-   * https://github.com/nestorpersist/json
-   */
+/**
+ * (Adapted from one of lihaoyi's repo's
+ *
+ * in turn
+ *
+ * Self-contained JSON parser adapted from
+ *
+ * https://github.com/nestorpersist/json
+ */
 
 object JsonNodes {
   sealed trait Value {

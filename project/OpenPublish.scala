@@ -5,6 +5,7 @@ import sbtrelease.Version
 
 object Publish {
 
+
   val settings = Seq[Setting[_]](
     organization := "biz.cgta",
     publishTo := {
@@ -37,4 +38,7 @@ object Publish {
         </developers>
 
   )
+
+  val settingsJvm = settings
+  val settingsSjs = settings
 }
