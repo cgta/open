@@ -36,7 +36,7 @@ object BaseBuild extends Build with UniversalKeys {
     promptSettings ++
     noScaladocSettings
 
-  lazy val noScaladocSettings = Seq[Setting[_]](publishArtifact in(Compile, packageDoc) := false)
+  lazy val noScaladocSettings = Seq[Setting[_]](publishArtifact in(Compile, packageDoc) := Publish.includeScaladoc)
 
   lazy val promptSettings = Seq[Setting[_]](
     shellPrompt <<= (thisProjectRef, version) { (id, v) => _ => "orange:%s:%s> ".format(id.project, v)}

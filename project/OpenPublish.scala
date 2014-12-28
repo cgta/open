@@ -8,6 +8,9 @@ import Utilities._
 import com.typesafe.sbt.pgp.PgpKeys._
 
 object Publish {
+
+  lazy val includeScaladoc = true
+
   lazy val publishSignedAction = { st: State =>
     val extracted = st.extract
     val ref = extracted.get(thisProjectRef)
