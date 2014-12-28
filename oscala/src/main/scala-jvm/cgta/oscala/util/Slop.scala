@@ -16,6 +16,6 @@ import java.io.FileOutputStream
 object Slop {
   def asFile(filename: String, data: String, append: Boolean) {
     val fis = new FileOutputStream(filename, append)
-    fis.write(data.getBytes(UTF8))
+    fis.write(data.getBytesUTF8)
   }
 }

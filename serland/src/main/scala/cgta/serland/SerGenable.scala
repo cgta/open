@@ -11,4 +11,5 @@ import cgta.serland.gen.Gen
 
 trait SerGenable[A] {
   def gen : Gen[A]
+  def sample: A = gen.sample.get
 }

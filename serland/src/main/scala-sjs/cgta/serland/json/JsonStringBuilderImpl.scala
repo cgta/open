@@ -15,9 +15,8 @@ import scala.scalajs.js
 class JsonStringBuilderImpl extends JsonStringBuilder {
   private val buf = new js.Array[String]()
   override def get(): String = buf.join("")
-  override def bool(b: Boolean): JsonStringBuilder = {buf(buf.length) = b.toString; this}
-  override def raw(s: String): JsonStringBuilder = {buf(buf.length) = s; this}
-  override def dbl(n: Double): JsonStringBuilder = {buf(buf.length) = n.toString; this}
-  override def int64(n: Long): JsonStringBuilder = {buf(buf.length) = n.toString; this}
-  override def int32(n: Int): JsonStringBuilder = {buf(buf.length) = n.toString; this}
+  override def bool(b: Boolean): JsonStringBuilder = { buf(buf.length) = b.toString; this }
+  override def raw(s: String): JsonStringBuilder = { buf(buf.length) = s; this }
+  override def num(n: String): JsonStringBuilder = { buf(buf.length) = n; this }
+  override def nul(): JsonStringBuilder = { buf(buf.length) = "null"; this }
 }

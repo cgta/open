@@ -17,19 +17,18 @@ import cgta.serland.json.{JsonWriterCompact, JsonWriterPretty, JsonWriter}
 
 
 object JsonOutOpts {
-  val legacy  = JsonOutOpts(longsAsStrings = false)
-  val default = JsonOutOpts(longsAsStrings = true)
+  val legacy  = JsonOutOpts(onlyBigLongsAsStrings = true)
 }
-case class JsonOutOpts(longsAsStrings: Boolean)
+case class JsonOutOpts(onlyBigLongsAsStrings: Boolean)
 
 object SerJsonOut {
-  def toJsonCompact[A: SerClass](a: A, opts: JsonOutOpts = JsonOutOpts.default): String = {
+  def toJsonCompact[A: SerClass](a: A, opts: JsonOutOpts = JsonOutOpts.legacy): String = {
     val w = JsonWriterCompact()
     val sjo = new SerJsonOut(w, opts)
     serClass[A].write(a, sjo)
     w.get()
   }
-  def toJsonPretty[A: SerClass](a: A, opts: JsonOutOpts = JsonOutOpts.default): String = {
+  def toJsonPretty[A: SerClass](a: A, opts: JsonOutOpts = JsonOutOpts.legacy): String = {
     val w = JsonWriterPretty()
     val sjo = new SerJsonOut(w, opts)
     serClass[A].write(a, sjo)
@@ -64,8 +63,8 @@ class SerJsonOut(val w: JsonWriter, opts: JsonOutOpts) extends SerOutput {
   override def writeOneOfBegin(keyName: String, keyId: Int) = {
     writeFieldIfNeeded()
     w.writeStartObject()
-    w.writeStringField("k", keyName)
-    w.writeFieldName("v")
+    w.writeStringField("key", keyName)
+    w.writeFieldName("value")
   }
   override def writeOneOfEnd() {
     w.writeEndObject()
@@ -91,7 +90,7 @@ class SerJsonOut(val w: JsonWriter, opts: JsonOutOpts) extends SerOutput {
   }
   override def writeByte(b: Byte) = {
     writeFieldIfNeeded()
-    w.writeInt(b)
+    w.writeNumber(b.toString)
   }
   override def writeChar(c: Char) = {
     writeFieldIfNeeded()
@@ -100,24 +99,28 @@ class SerJsonOut(val w: JsonWriter, opts: JsonOutOpts) extends SerOutput {
   override def writeByteArrLen(a: Array[Byte], offset: Int, length: Int) = {
     writeFieldIfNeeded()
     w.writeStartArray()
-    a.view.drop(offset).take(length).foreach(b => w.writeInt(b))
+    a.view.drop(offset).take(length).foreach(b => w.writeNumber(b.toString))
     w.writeEndArray()
   }
   override def writeInt32(a: Int, hint: Ser32Hint) = {
     writeFieldIfNeeded()
-    w.writeInt(a)
+    w.writeNumber(a.toString)
   }
   override def writeInt64(a: Long, hint: Ser64Hint) = {
     writeFieldIfNeeded()
-    if (opts.longsAsStrings) {
-      w.writeString(a.toString)
+    if (opts.onlyBigLongsAsStrings) {
+      if (a > 9007199254740992L || a < -9007199254740992L) {
+        w.writeString(a.toString)
+      } else {
+        w.writeNumber(a.toString)
+      }
     } else {
-      w.writeLong(a)
+      w.writeString(a.toString)
     }
   }
   override def writeDouble(a: Double) = {
     writeFieldIfNeeded()
-    w.writeDouble(a)
+    w.writeNumber(a.toString)
   }
 
   override def writeIterable[A](xs: Iterable[A], sca: SerWritable[A]) = {

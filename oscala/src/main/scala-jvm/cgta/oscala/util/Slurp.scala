@@ -33,13 +33,13 @@ object Slurp {
   }
 
   def asString(is: InputStream): String = {
-    new String(asBytes(is), UTF8)
+    Utf8Help.fromBytes(asBytes(is))
   }
 
   def asString(filename: String): String = {
     val fis = new FileInputStream(filename)
     try {
-      new String(asBytes(fis), UTF8)
+      Utf8Help.fromBytes(asBytes(fis))
     } finally {
       fis.close()
     }

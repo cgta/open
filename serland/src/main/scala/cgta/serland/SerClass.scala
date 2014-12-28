@@ -1,5 +1,7 @@
 package cgta.serland
 
+import cgta.serland.gen.Gen
+
 
 //////////////////////////////////////////////////////////////
 // Copyright (c) 2011 Ben Jackman, Jeff Gomberg
@@ -11,7 +13,20 @@ package cgta.serland
 
 object SerClass extends SerBasics.SerClasses
 
-trait SerClass[A] extends SerWritable[A] with SerReadable[A] with SerSchemable[A] with SerGenable[A]
+trait SerClass[A] extends SerWritable[A] with SerReadable[A] with SerSchemable[A] with SerGenable[A] {
+  def copy(
+    schemaFn: () => SerSchema = () => this.schema,
+    readFn: SerInput => A = this.read,
+    writeFn: (A, SerOutput) => Unit = this.write,
+    genFn: () => Gen[A] = () => this.gen): SerClass[A] = new SerClass[A] {
+    
+    override def schema: SerSchema = schemaFn()
+    override def read(in: SerInput): A = readFn(in)
+    override def write(a: A, out: SerOutput): Unit = writeFn(a, out)
+    override def gen: Gen[A] = genFn()
+  }
+
+}
 
 
 

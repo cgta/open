@@ -51,6 +51,8 @@ object SerBasics {
   }
   case class MapEntrySerable[K, V](k: K, v: V)
 
+
+
   trait SerClasses {
     implicit object BooleanSerClass extends SerClass[Boolean] {
       override def write(a: Boolean, out: SerOutput) = out.writeBoolean(a)
@@ -163,6 +165,18 @@ object SerBasics {
     }
     implicit def SeqSerClass[A: SerClass] = new SeqSerClass[A]
 
+    class IISeqSerClass[A: SerClass] extends SerClass[IISeq[A]] {
+      implicit val sca = implicitly[SerClass[A]]
+      override def write(a: IISeq[A], out: SerOutput): Unit = out.writeIterable(a, sca)
+      override def read(in: SerInput): IISeq[A] = in.readIterable(sca).toVector
+      override def schema: SerSchema = SerSchemas.XSeq(SerSchemas.XASeq, sca.schema.schemaRef)
+      override def gen: Gen[IISeq[A]] = {
+        implicit val a = Arbitrary(sca.gen)
+        Arbitrary.arbitrary[IISeq[A]]
+      }
+    }
+    implicit def IISeqSerClass[A: SerClass] = new IISeqSerClass[A]
+
 
     class OptSerClass[A: SerClass] extends SerClass[Option[A]] {
       val sca = implicitly[SerClass[A]]
@@ -177,7 +191,7 @@ object SerBasics {
     implicit def optSerClass[A: SerClass] = new OptSerClass[A]
 
     class IMapSerClass[A: SerClass, B: SerClass] extends SerClass[IMap[A, B]] {
-      implicit val kvSer   = MapEntrySerable.ser[A, B]
+      implicit val kvSer  = MapEntrySerable.ser[A, B]
       override val schema = SerSchemas.XSeq(SerSchemas.XIMap, kvSer.schema)
       override def gen = {
         implicit val arb0 = Arbitrary(kvSer.gen)
@@ -189,6 +203,45 @@ object SerBasics {
     }
     implicit def iMapSerClass[K: SerClass, V: SerClass] = new IMapSerClass[K, V]
 
+
+    class EitherSerClass[A: SerClass, B: SerClass] extends SerClass[Either[A, B]] {
+      lazy val sca = implicitly[SerClass[A]]
+      lazy val scb = implicitly[SerClass[B]]
+      lazy val scao = implicitly[SerClass[Option[A]]]
+      lazy val scbo = implicitly[SerClass[Option[B]]]
+      override val schema = SerSchemas.XEither(sca.schema, scb.schema)
+      override def gen = {
+        implicit val arba = Arbitrary(sca.gen)
+        implicit val arbb = Arbitrary(scb.gen)
+        Arbitrary.arbEither[A, B].arbitrary
+      }
+      override def write(xs: Either[A, B], out: SerOutput) = {
+        out.writeStructBegin()
+        out.writeFieldBegin("left", 1)
+        scao.write(xs.left.toOption, out)
+        out.writeFieldEnd()
+        out.writeFieldBegin("right", 2)
+        scbo.write(xs.right.toOption, out)
+        out.writeFieldEnd()
+        out.writeStructEnd()
+      }
+      override def read(in: SerInput) : Either[A,B] = {
+        var res : Option[Either[A, B]] = None
+        in.readStructBegin()
+        in.readFieldBegin("left", 1)
+        scao.read(in).foreach((a) => res = Some(Left(a)))
+        in.readFieldEnd()
+        in.readFieldBegin("right", 2)
+        scbo.read(in).foreach((b) => res = Some(Right(b)))
+        in.readFieldEnd()
+        in.readStructEnd()
+        res match {
+          case Some(r) => r
+          case None => READ_ERROR("Unable to read Either")
+        }
+      }
+    }
+    implicit def eitherSerClass[A: SerClass, B: SerClass] = new EitherSerClass[A, B]
 
   }
 }

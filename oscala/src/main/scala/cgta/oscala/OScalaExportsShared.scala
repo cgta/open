@@ -2,6 +2,8 @@ package cgta.oscala
 
 import cgta.oscala.extensions.{DoubleExtensions, IteratorExtensions, BooleanExtensions, ArrayExtensions, IntExtensions, Func1Extensions, SeqExtensions, IMapExtensions, StringExtensions, ByteExtensions, TypeAExtensions}
 
+import concurrent.ExecutionContext
+
 
 //////////////////////////////////////////////////////////////
 // Created by bjackman @ 4/23/14 8:57 AM
@@ -48,7 +50,7 @@ trait OScalaExportsShared {
   val Thousand: Long   = 1000
   val Million : Long   = 1000000
   val Billion : Long   = 1000000000
-  val UTF8    : String = "UTF-8"
+//  val UTF8    : String = "UTF-8"
 
   /**
    * Extensions
@@ -82,5 +84,7 @@ trait OScalaExportsShared {
 
   val OLock = util.OLock
   type OLock = util.OLock
+
+  val defaultExecutionContext : ExecutionContext
 
 }

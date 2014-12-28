@@ -15,10 +15,9 @@ trait JsonWriter {
   def writeEndArray(): Unit
 
   def writeBoolean(b: Boolean): Unit
-  def writeInt(n: Int): Unit
-  def writeLong(n: Long): Unit
-  def writeDouble(n: Double): Unit
+  def writeNumber(n : String) : Unit
   def writeString(s: String): Unit
   def writeStringField(k: String, v: String): Unit
+  def writeNull() : Unit
 }
 

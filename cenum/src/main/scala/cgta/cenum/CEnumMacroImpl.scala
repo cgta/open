@@ -1,6 +1,6 @@
 package cgta.cenum
 
-import scala.reflect.macros.Context
+import scala.reflect.macros.blackbox.Context
 
 //////////////////////////////////////////////////////////////
 // Copyright (c) 2014 Ben Jackman, Jeff Gomberg
@@ -18,7 +18,7 @@ object CEnumMacroImpl {
     import c.universe._
 
     val tpe = c.weakTypeOf[A]
-    val elems = tpe.declarations.filter(d => d.isModule).map(_.name)
+    val elems = tpe.decls.filter(d => d.isModule).map(_.name)
     val res = q"scala.collection.immutable.Vector(..$elems)"
     c.Expr[IVec[A#EET]](res)
   }

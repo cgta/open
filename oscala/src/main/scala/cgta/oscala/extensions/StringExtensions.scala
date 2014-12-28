@@ -2,6 +2,7 @@ package cgta.oscala
 package extensions
 
 import java.io.File
+import scala.annotation.tailrec
 
 import cgta.oscala.util.Utf8Help
 

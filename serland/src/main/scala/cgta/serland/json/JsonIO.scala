@@ -1,5 +1,7 @@
 package cgta.serland.json
 
+import cgta.serland.json.JsonNodes.Str
+
 import scala.annotation.switch
 
 /**
@@ -12,131 +14,102 @@ import scala.annotation.switch
  * https://github.com/nestorpersist/json
  */
 
-object JsonNodes {
-  sealed trait Value {
-    private def BAD_TYPE(tpe : java.lang.String) = sys.error(s"Cannot call this method when type is not $tpe value [$this]")
 
-    def getBooleanValue: Boolean = BAD_TYPE("Boolean")
+object JsonIO {
+  //  def writeToBuffer(v: JsonNodes.Value, sb: StringBuffer): Unit = v match {
+  //    case JsonNodes.Str(s) =>
+  //      sb.append('"')
+  //      var i = 0
+  //      while (i < s.length) {
+  //        (s.charAt(i): @switch) match {
+  //          case '\\' => sb.append("\\\\")
+  //          case '"' => sb.append("\\\"")
+  ////          case '/' => sb.append("\\/")
+  //          case '\b' => sb.append("\\b")
+  //          case '\t' => sb.append("\\t")
+  //          case '\n' => sb.append("\\n")
+  //          case '\f' => sb.append("\\f")
+  //          case '\r' => sb.append("\\r")
+  //          case c =>
+  //            if (c < ' ') {
+  //              val t = "000" + Integer.toHexString(c)
+  //              sb.append("\\u" + t.takeRight(4))
+  //            } else {
+  //              sb.append(c.toString)
+  //            }
+  //        }
+  //        i += 1
+  //      }
+  //      sb.append('"')
+  //    case JsonNodes.Obj(kv) =>
+  //      sb.append("{")
+  //      if (kv.length > 0) {
+  //        writeToBuffer(JsonNodes.Str(kv(0)._1), sb)
+  //        sb.append(": ")
+  //        writeToBuffer(kv(0)._2, sb)
+  //      }
+  //      var i = 1
+  //      while (i < kv.length) {
+  //        sb.append(", ")
+  //        writeToBuffer(JsonNodes.Str(kv(i)._1), sb)
+  //        sb.append(": ")
+  //        writeToBuffer(kv(i)._2, sb)
+  //        i += 1
+  //      }
+  //      sb.append("}")
+  //
+  //    case JsonNodes.Array(vs) =>
+  //      sb.append("[")
+  //      if (vs.length > 0) writeToBuffer(vs(0), sb)
+  //      var i = 1
+  //      while (i < vs.length) {
+  //        sb.append(", ")
+  //        writeToBuffer(vs(i), sb)
+  //        i += 1
+  //      }
+  //      sb.append("]")
+  //    case JsonNodes.Number(d) => sb.append(d)
+  //    case JsonNodes.False => sb.append("false")
+  //    case JsonNodes.True => sb.append("true")
+  //    case JsonNodes.Null => sb.append("null")
+  //  }
+  //  def write(v: JsonNodes.Value): String = {
+  //    val sb = new StringBuffer()
+  //    Json.writeToBuffer(v, sb)
+  //    sb.toString
+  //  }
 
-    def isNumber = false
-    def getIntValue : Int = BAD_TYPE("Number")
-    def getLongValue : Long = BAD_TYPE("Number")
-    def getDoubleValue: Double = BAD_TYPE("Number")
-
-    def isArray: Boolean = false
-    def getElementsItr: Iterator[Value] = BAD_TYPE("Array")
-    def getElementsSeq: Seq[Value] = BAD_TYPE("Array")
-
-    def getTextValue: java.lang.String = BAD_TYPE("String")
-    def isTextual = false
-
-    def isObject: Boolean = false
-    def get(s: java.lang.String): Option[Value] = BAD_TYPE("Object")
-    def getFieldNames: Iterator[java.lang.String] = Iterator.empty
-
-    def value: Any
-    def apply(i: Int): Value = this.asInstanceOf[Array].value(i)
-    def apply(s: java.lang.String): Value = get(s).get
-  }
-  case class Str(value: java.lang.String) extends Value {
-    override def getTextValue: java.lang.String = value
-    override def isTextual = true
-  }
-  case class Obj(value: Seq[(java.lang.String, Value)]) extends Value {
-    override def getFieldNames: Iterator[java.lang.String] = value.iterator.map(_._1)
-    override def isObject = true
-    override def get(s: java.lang.String): Option[Value] = {
-      value.find(_._1 == s).map(_._2)
+  def write(v: JsonNodes.Value, w: JsonWriter) {
+    v match {
+      case JsonNodes.Str(s) => w.writeString(s)
+      case JsonNodes.Arr(xs) =>
+        w.writeStartArray()
+        xs.foreach(write(_, w))
+        w.writeEndArray()
+      case JsonNodes.Obj(fs) =>
+        w.writeStartObject()
+        fs.foreach { case (n, v) =>
+          w.writeFieldName(n)
+          write(v, w)
+        }
+        w.writeEndObject()
+      case JsonNodes.Number(n) => w.writeNumber(n)
+      case JsonNodes.Bool(b) => w.writeBoolean(b)
+      case JsonNodes.Null => w.writeNull
     }
   }
-  case class Array(value: Seq[Value]) extends Value {
-    override def isArray = true
-    override def getElementsItr: Iterator[Value] = value.iterator
-    override def getElementsSeq: Seq[Value] = value
-  }
-  case class Number(value: java.lang.String) extends Value {
-    override def isNumber = true
-    override def getIntValue: Int = value.toInt
-    override def getLongValue: Long = value.toLong
-    override def getDoubleValue: Double = value.toDouble
-  }
-  case object False extends Value {
-    override def getBooleanValue: Boolean = false
-    def value = true
-  }
-  case object True extends Value {
-    override def getBooleanValue: Boolean = true
-    def value = false
-  }
-  case object Null extends Value {
-    def value = null
-  }
-}
 
-
-object Json {
-  def writeToBuffer(v: JsonNodes.Value, sb: StringBuffer): Unit = v match {
-    case JsonNodes.Str(s) =>
-      sb.append('"')
-      var i = 0
-      while (i < s.length) {
-        (s.charAt(i): @switch) match {
-          case '\\' => sb.append("\\\\")
-          case '"' => sb.append("\\\"")
-          case '/' => sb.append("\\/")
-          case '\b' => sb.append("\\b")
-          case '\t' => sb.append("\\t")
-          case '\n' => sb.append("\\n")
-          case '\f' => sb.append("\\f")
-          case '\r' => sb.append("\\r")
-          case c =>
-            if (c < ' ') {
-              val t = "000" + Integer.toHexString(c)
-              sb.append("\\u" + t.takeRight(4))
-            } else {
-              sb.append(c.toString)
-            }
-        }
-        i += 1
-      }
-      sb.append('"')
-    case JsonNodes.Obj(kv) =>
-      sb.append("{")
-      if (kv.length > 0) {
-        writeToBuffer(JsonNodes.Str(kv(0)._1), sb)
-        sb.append(": ")
-        writeToBuffer(kv(0)._2, sb)
-      }
-      var i = 1
-      while (i < kv.length) {
-        sb.append(", ")
-        writeToBuffer(JsonNodes.Str(kv(i)._1), sb)
-        sb.append(": ")
-        writeToBuffer(kv(i)._2, sb)
-        i += 1
-      }
-      sb.append("}")
-
-    case JsonNodes.Array(vs) =>
-      sb.append("[")
-      if (vs.length > 0) writeToBuffer(vs(0), sb)
-      var i = 1
-      while (i < vs.length) {
-        sb.append(", ")
-        writeToBuffer(vs(i), sb)
-        i += 1
-      }
-      sb.append("]")
-    case JsonNodes.Number(d) => sb.append(d)
-    case JsonNodes.False => sb.append("false")
-    case JsonNodes.True => sb.append("true")
-    case JsonNodes.Null => sb.append("null")
+  def writeCompact(v : JsonNodes.Value) : String = {
+    val w = JsonWriterCompact()
+    write(v, w)
+    w.get()
   }
-  def write(v: JsonNodes.Value): String = {
-    val sb = new StringBuffer()
-    Json.writeToBuffer(v, sb)
-    sb.toString
+  def writePretty(v : JsonNodes.Value) : String = {
+    val w = JsonWriterPretty()
+    write(v, w)
+    w.get()
   }
+
 
   /**
    * Self-contained JSON parser adapted from
@@ -256,7 +229,7 @@ object Json {
 
 
     def chError(msg: String): Nothing = {
-      throw new Json.Exception(msg, s, chLinePos, chCharPos)
+      throw new JsonIO.Exception(msg, s, chLinePos, chCharPos)
     }
 
     def chMark = pos - 1
@@ -420,7 +393,7 @@ object Json {
     }
 
     def tokenError(msg: String): Nothing = {
-      throw new Json.Exception(msg, s, linePos, charPos)
+      throw new JsonIO.Exception(msg, s, linePos, charPos)
     }
 
     // *** PARSER ***
@@ -428,7 +401,7 @@ object Json {
     def handleEof() = tokenError("Unexpected eof")
     def handleUnexpected(i: String) = tokenError(s"Unexpected input: [$i]")
 
-    def handleArray(): JsonNodes.Array = {
+    def handleArray(): JsonNodes.Arr = {
       tokenNext()
       var result = List.empty[JsonNodes.Value]
       while (tokenKind != RARR) {
@@ -441,7 +414,7 @@ object Json {
         }
       }
       tokenNext()
-      JsonNodes.Array(result.reverse)
+      JsonNodes.Arr(result.reverse)
     }
 
     def handleObject(): JsonNodes.Obj = {
@@ -482,8 +455,8 @@ object Json {
       val result: JsonNodes.Value = (kind) match {
         case ID =>
           val result = tokenValue match {
-            case "true" => JsonNodes.True
-            case "false" => JsonNodes.False
+            case "true" => JsonNodes.Bool(value = true)
+            case "false" => JsonNodes.Bool(value = false)
             case "null" => JsonNodes.Null
             case _ => tokenError("Not true, false, or null")
           }

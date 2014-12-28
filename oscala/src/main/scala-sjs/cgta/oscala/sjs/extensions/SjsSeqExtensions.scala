@@ -15,7 +15,7 @@ import scala.scalajs.js
 
 class SjsSeqExtensions[A](val xs: Seq[A]) extends AnyVal {
 
-  def toJsArray: js.Array[A] = {
+  def toJsArr: js.Array[A] = {
     val ys = new js.Array[A](xs.size)
     var i = 0
     while (i < xs.length) {

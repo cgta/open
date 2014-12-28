@@ -26,12 +26,12 @@ object ScalaJSExample {
 
 
   def showUgly() {
-    val parsed = Json.read(ugly)
+    val parsed = JsonIO.read(ugly)
     println(parsed(0))
     println(parsed(8)("real"))
     println(parsed(8)("comment"))
     println(parsed(8)("jsontext"))
-    println(Json.write(parsed(8)))
+//    println(Json.write(parsed(8)))
   }
 
   val ugly =

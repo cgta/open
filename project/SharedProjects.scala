@@ -8,14 +8,14 @@ object SharedProjects extends Build {
 
   //Adds syntax like IVec to scala and scala js and other specific cgta enhancements to each
   lazy val (oscalaX, oscala, oscalaJvm, oscalaSjs, oscalaJvmTest, oscalaSjsTest) = crossProject("oscala")
-    .settingsSjs(Deps.Dom.settings: _*)
+    .settingsSjs(Libs.Dom.settings: _*)
     .tupledWithTests
 
   //Serialization
   lazy val (serlandX, serland, serlandJvm, serlandSjs, serlandJvmTest, serlandSjsTest) = crossProject("serland")
     .dependsOn(oscalaX)
     .settingsAll(macroSettings: _*)
-    .settingsJvm(libraryDependencies ++= Libs.mongo)
+    .settingsJvm(libraryDependencies ++= OldLibs.mongo)
     .tupledWithTests
 
   //Enumeration

@@ -14,8 +14,7 @@ class JsonStringBuilderImpl extends JsonStringBuilder {
   private val sb = new StringBuilder()
   override def get(): String = sb.toString()
   override def raw(s: String): JsonStringBuilder = { sb.append(s); this }
-  override def dbl(n: Double): JsonStringBuilder = { sb.append(n); this }
-  override def int64(n: Long): JsonStringBuilder = { sb.append(n); this }
-  override def int32(n: Int): JsonStringBuilder = { sb.append(n); this }
+  override def num(n: String): JsonStringBuilder = { sb.append(n); this }
   override def bool(b: Boolean): JsonStringBuilder = { sb.append(b); this }
+  override def nul(): JsonStringBuilder = {sb.append("null");this}
 }

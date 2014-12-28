@@ -132,9 +132,22 @@ object Arbitrary {
 
   /**** Arbitrary instances of other common types ****/
 
+  val simpleStrings = true
   /** Arbitrary instance of String */
   implicit lazy val arbString: Arbitrary[String] =
-    Arbitrary(arbitrary[List[Char]] map (_.mkString))
+    if (simpleStrings){
+      Arbitrary(frequency(
+        1 -> "",
+        1 -> "a",
+        1 -> "A",
+        1 -> "A SAMPLE STRING",
+        1 -> "a sample string",
+        1 -> "a sample String"
+      ))
+    } else {
+      Arbitrary(arbitrary[List[Char]] map (_.mkString))
+    }
+
 
   /** Arbitrary instance of Date */
   implicit lazy val arbDate: Arbitrary[Date] = Arbitrary(for {

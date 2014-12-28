@@ -9,8 +9,9 @@ import cgta.serland.gen.Gen
 // for licensing inquiries
 // Created by bjackman @ 9/25/13 9:26 PM
 //////////////////////////////////////////////////////////////
+object SerBuilder extends SerBuilder
 
-object SerBuilder extends SerBuilderMacros {
+trait SerBuilder extends SerBuilderMacros {
 
   /**
    * Allows converting a class to/from a class that already has a SerClass, so as to reuse that classes
@@ -70,6 +71,8 @@ object SerBuilder extends SerBuilderMacros {
       out.writeStructEnd()
     }
   }
+
+  def forCase0[A <: Product](f: Function0[A]): SerClass[A] = forCase(f)
 
 }
 

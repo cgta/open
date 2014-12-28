@@ -68,16 +68,17 @@ object TestSerClassBasicSers extends FunSuite with UnitTestHelpSerClass {
 
   test("Long"){
     val q = "\""
-    def v(x: Long) {
-      validate(x)(q + x.toString + q, pennyVarInt(WSVarInt, BinaryHelp.encodeZigZag64(x)), schema = XNumber(XSVarInt64))
+    def v(x: Long, s : Boolean = false) {
+      val y = if (s) q + x.toString + q else x.toString
+      validate(x)(y, pennyVarInt(WSVarInt, BinaryHelp.encodeZigZag64(x)), schema = XNumber(XSVarInt64))
     }
-    v(Long.MaxValue)
+    v(Long.MaxValue, s = true)
     v(2L)
     v(1L)
     v(0L)
     v(-1L)
     v(-2L)
-    v(Long.MinValue)
+    v(Long.MinValue, s = true)
   }
 
   test("JsonLongsFromStringOrNumber"){
@@ -166,6 +167,14 @@ object TestSerClassBasicSers extends FunSuite with UnitTestHelpSerClass {
     v(IMap[Int, Option[Int]](1 -> Some(2)), """[{"k":1,"v":2}]""", XSeq(XOpt, XNumber(XSVarInt32)))
     v(IMap(1 -> 2), """[{"k":1,"v":2}]""", XNumber(XSVarInt32))
     v(IMap(1 -> 2, 3 -> 4), """[{"k":1,"v":2},{"k":3,"v":4}]""", XNumber(XSVarInt32))
+  }
+
+  test("Either") {
+    validate[Either[Int, String]](Left(5))("""{"left":5}""")
+    validate[Either[Int, String]](Right("Foo"))("""{"right":"Foo"}""")
+    validate[Either[Option[Int], String]](Left(None))("""{"left":[]}""")
+    validate[Either[Option[Int], String]](Left(Some(5)))("""{"left":[5]}""")
+    validate[Either[Option[Int], String]](Right("Foo"))("""{"right":"Foo"}""")
   }
 
   //Top level option encodings cause no end of headaches. Leaving this commented out for now

@@ -1,6 +1,9 @@
 package cgta.oscala
 package util.debugging
 
+import java.text.SimpleDateFormat
+import java.util.Date
+
 
 //////////////////////////////////////////////////////////////
 // Copyright (c) 2014 Ben Jackman, Jeff Gomberg
@@ -12,8 +15,11 @@ package util.debugging
 
 trait PrintPlat extends PRINT {
 
-//  val timeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS")
-//  def timeInfo() : String = timeFormatter.print(new DateTime())
+  val timeFormatter = new ThreadLocal[SimpleDateFormat] {
+    override def initialValue(): SimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
+  }
+
+  def timeInfo() : String = timeFormatter.get().format(new Date())
 
   private def lineInfo(): String = getLineInfo.getOrElse("???")
 
@@ -41,8 +47,6 @@ trait PrintPlat extends PRINT {
 
 
   override final def |(msg: Any) {
-//    println(s"${timeInfo()} [${lineInfo()}] -- $x")
-    println(s"[${lineInfo()}] -- $msg")
-
+    println(s"${timeInfo()} [${lineInfo()}] -- $msg")
   }
 }

@@ -6,7 +6,7 @@ package cgta.serland
 //////////////////////////////////////////////////////////////
 
 import scala.language.experimental.macros
-import scala.reflect.macros.Context
+import scala.reflect.macros.blackbox.Context
 
 object SerBuilderMacrosImpl {
 
@@ -30,15 +30,15 @@ object SerBuilderMacrosImpl {
       }
     }
 
-    val accessors = (tpe.declarations collect {
+    val accessors = (tpe.decls collect {
       case acc: MethodSymbol if acc.isCaseAccessor => acc
     }).toList
 
     val serClasses = for {
       (accessor, idx) <- accessors.zipWithIndex
     } yield {
-      val serClassName = c.universe.newTermName("serClass" + idx)
-      val tpeN = c.universe.newTypeName(accessor.typeSignature.toString.drop(3))
+      val serClassName = c.universe.TermName("serClass" + idx)
+      val tpeN = c.universe.TypeName(accessor.typeSignature.toString.drop(3))
       //Using parse here is really dirty, however I can't get it to work with quasiquotes
       //Generic parameter names will be treated as concrete, unless c.universe.newTypeName(...) is used
       //However that will cause problems if that is called on something like Option[Int] It doesn't
@@ -53,8 +53,8 @@ object SerBuilderMacrosImpl {
     } yield {
       val fieldName = accessor.name
       val fieldNameString = fieldName.toString
-      val fieldNameTerm = c.universe.newTermName(fieldNameString)
-      val serWritableName = c.universe.newTermName("serClass" + idx)
+      val fieldNameTerm = c.universe.TermName(fieldNameString)
+      val serWritableName = c.universe.TermName("serClass" + idx)
       val tpeN = accessor.typeSignature
       q"""
       try {
@@ -72,8 +72,8 @@ object SerBuilderMacrosImpl {
     } yield {
       val fieldName = accessor.name
       val fieldNameString = fieldName.toString
-      val serReadableName = c.universe.newTermName("serClass" + idx)
-      val tmpName = c.universe.newTermName("tmp" + idx)
+      val serReadableName = c.universe.TermName("serClass" + idx)
+      val tmpName = c.universe.TermName("tmp" + idx)
 
       q"""
       val $tmpName = try {
@@ -90,21 +90,16 @@ object SerBuilderMacrosImpl {
     val tmps = for {
       (accessor, idx) <- accessors.zipWithIndex.toList
     } yield {
-      val tmpName = c.universe.newTermName("tmp" + idx)
+      val tmpName = c.universe.TermName("tmp" + idx)
       q"$tmpName"
     }
 
     val serGen = {
-      val fqs = for {
-        (accessor, idx) <- accessors.zipWithIndex
-      } yield {
-        s"tmp$idx <- serClass$idx.gen"
-      }
-      val fqsStr = fqs.mkString("", ";", "")
       val tStr = tpe.toString
-      val gensStr = tmps.mkString("", ",", "")
-
-      val code = s"for($fqsStr) yield {new $tStr($gensStr)}"
+      val gensStr = (0 until accessors.size).map(i=> s"serClass$i.gen.sample.get").mkString("", ",", "")
+      //Seems that just returning the type is enough because there seems to be an implicit that will
+      //lift the returned type into a Gen[T]
+      val code = s" cgta.serland.gen.Arbitrary.arbitrary[Boolean].map(x=> new $tStr($gensStr))"
       c.parse(code)
     }
 
@@ -114,7 +109,7 @@ object SerBuilderMacrosImpl {
       } yield {
         val fieldName = accessor.name
         val fieldNameString = fieldName.toString
-        val serReadableName = c.universe.newTermName("serClass" + idx)
+        val serReadableName = c.universe.TermName("serClass" + idx)
         q"XField($fieldNameString, $idx, $serReadableName.schema.schemaRef)"
       }
     }
@@ -137,7 +132,7 @@ object SerBuilderMacrosImpl {
             case e : Throwable => cgta.serland.READ_ERROR("at SerCaseClass[" + $tpeStr + "]", e)
           }
         }
-        
+
         override def write(a: $tpe, out: cgta.serland.SerOutput) {
           try {
             out.writeStructBegin()
@@ -196,13 +191,13 @@ object SerBuilderMacrosImpl {
     }
 
     val serIdxs = for ((sub, idx) <- subs.zipWithIndex) yield {
-      val serIdx = newTermName("ser" + idx)
+      val serIdx = TermName("ser" + idx)
       q"val $serIdx = implicitly[cgta.serland.SerClass[$sub]]"
     }
 
     val ifs = for ((sub, idx) <- subs.zipWithIndex) yield {
       val n = name(sub)
-      val serIdx = newTermName("ser" + idx)
+      val serIdx = TermName("ser" + idx)
       q"""
       if (a.isInstanceOf[$sub]) {
         out.writeOneOfBegin($n,$idx)
@@ -218,7 +213,7 @@ object SerBuilderMacrosImpl {
         (sub, idx) <- subs.zipWithIndex.toList
       } yield {
         val n = name(sub)
-        val serIdx = newTermName("ser" + idx)
+        val serIdx = TermName("ser" + idx)
         q"XSub($n, $idx, $serIdx.schema.schemaRef)"
       }
     }
@@ -297,7 +292,7 @@ object SerBuilderMacrosImpl {
   def forSubs6[A: c.WeakTypeTag, S1 <: A : c.WeakTypeTag, S2 <: A : c.WeakTypeTag, S3 <: A : c.WeakTypeTag, S4 <: A : c.WeakTypeTag, S5 <: A : c.WeakTypeTag, S6 <: A : c.WeakTypeTag](c: Context): c.Expr[SerClass[A]] = forSubsN[A](c)(c.weakTypeOf[A], IVec(c.weakTypeOf[S1], c.weakTypeOf[S2], c.weakTypeOf[S3], c.weakTypeOf[S4], c.weakTypeOf[S5], c.weakTypeOf[S6]))
   def forSubs7[A: c.WeakTypeTag, S1 <: A : c.WeakTypeTag, S2 <: A : c.WeakTypeTag, S3 <: A : c.WeakTypeTag, S4 <: A : c.WeakTypeTag, S5 <: A : c.WeakTypeTag, S6 <: A : c.WeakTypeTag, S7 <: A : c.WeakTypeTag](c: Context): c.Expr[SerClass[A]] = forSubsN[A](c)(c.weakTypeOf[A], IVec(c.weakTypeOf[S1], c.weakTypeOf[S2], c.weakTypeOf[S3], c.weakTypeOf[S4], c.weakTypeOf[S5], c.weakTypeOf[S6], c.weakTypeOf[S7]))
   def forSubs8[A: c.WeakTypeTag, S1 <: A : c.WeakTypeTag, S2 <: A : c.WeakTypeTag, S3 <: A : c.WeakTypeTag, S4 <: A : c.WeakTypeTag, S5 <: A : c.WeakTypeTag, S6 <: A : c.WeakTypeTag, S7 <: A : c.WeakTypeTag,  S8 <: A : c.WeakTypeTag](c: Context): c.Expr[SerClass[A]] = forSubsN[A](c)(c.weakTypeOf[A], IVec(c.weakTypeOf[S1], c.weakTypeOf[S2], c.weakTypeOf[S3], c.weakTypeOf[S4], c.weakTypeOf[S5], c.weakTypeOf[S6], c.weakTypeOf[S7], c.weakTypeOf[S8]))
-
+  def forSubs9[A: c.WeakTypeTag, S1 <: A : c.WeakTypeTag, S2 <: A : c.WeakTypeTag, S3 <: A : c.WeakTypeTag, S4 <: A : c.WeakTypeTag, S5 <: A : c.WeakTypeTag, S6 <: A : c.WeakTypeTag, S7 <: A : c.WeakTypeTag,  S8 <: A : c.WeakTypeTag,  S9 <: A : c.WeakTypeTag](c: Context): c.Expr[SerClass[A]] = forSubsN[A](c)(c.weakTypeOf[A], IVec(c.weakTypeOf[S1], c.weakTypeOf[S2], c.weakTypeOf[S3], c.weakTypeOf[S4], c.weakTypeOf[S5], c.weakTypeOf[S6], c.weakTypeOf[S7], c.weakTypeOf[S8], c.weakTypeOf[S9]))
 
 }
 

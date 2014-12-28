@@ -41,4 +41,13 @@ object TestSerlandBugs extends FunSuite {
     v("x")(SerJsonIn.fromJsonString[RequiredFields]("""{}"""))
     v("y")(SerJsonIn.fromJsonString[RequiredFields]("""{"x":1}"""))
   }
+
+  test("Don't Escape forward slash") {
+    Assert.isEquals("\"/a/b/c\"", "/a/b/c".toJsonCompact())
+  }
+
+  test("Integers don't add .0") {
+    val i = 10L
+    Assert.isEquals("10", i.toJsonCompact())
+  }
 }

@@ -1,6 +1,6 @@
 #!/bin/bash -eax
 
-ORANGE=$HOME/cgta/orange
+ORANGE=$HOME/cgta/ultimate
 OPEN=$HOME/cgta/open
 
 if [[ ! -d "$ORANGE" ]] || [[ ! -d "$OPEN" ]]; then
@@ -22,10 +22,12 @@ proj() {
 
 sbtfiles() {
   #Remove the Non O* files, build files just Open need to start with a capital O
+  rm -f $OPEN/project/build.properties
   rm -f $OPEN/project/[!O]*.scala
   rm -f $OPEN/project/[!O]*.sbt
   #Don't copy over files that start with a capital C (for Closed)
   mkdir -p $OPEN/project
+  cp $ORANGE/project/build.properties $OPEN/project/
   cp $ORANGE/project/[!C]*.sbt $OPEN/project/
   cp $ORANGE/project/[!C]*.scala $OPEN/project/
 }

@@ -9,7 +9,7 @@ object OpenProjects extends Build {
   lazy val root = Project("root", file("."))
     .aggregate(oscalaJvm, oscalaSjs, serlandJvm, serlandSjs, cenumJvm, cenumSjs)
 //    .settings(crossScalaVersions := Seq("2.10.2", "2.11.1"))
-    .settings(crossScalaVersions := Seq("2.10.2"))
+    .settings(crossScalaVersions := Seq("2.11.4"))
     .settings(sbtrelease.ReleasePlugin.releaseSettings: _*)
     .settings(Publish.settings: _*)
     .settings(publish :=())

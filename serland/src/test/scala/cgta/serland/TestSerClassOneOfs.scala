@@ -59,10 +59,10 @@ object TestSerClassOneOfs extends FunSuite with UnitTestHelpSerClass {
   }
 
   test("OneOfs") {
-    v(ConA(1), """{"k":"ConA","v":{"x":1}}""")
-    v(ConB(1), """{"k":"ConB","v":{"x":1}}""")
-    v(ConB(1), """{"key":"ConB","v":{"x":1}}""", verifyJsonInEqualsJsonOut = false)
-    v(ConB(1), """{"k":"ConB","value":{"x":1}}""", verifyJsonInEqualsJsonOut = false)
+    v(ConA(1), """{"key":"ConA","value":{"x":1}}""")
+    v(ConB(1), """{"key":"ConB","value":{"x":1}}""")
+    v(ConB(1), """{"key":"ConB","value":{"x":1}}""", verifyJsonInEqualsJsonOut = false)
+    v(ConB(1), """{"key":"ConB","value":{"x":1}}""", verifyJsonInEqualsJsonOut = false)
     v(ConB(1), """{"key":"ConB","value":{"x":1}}""", verifyJsonInEqualsJsonOut = false)
     v(ConC, """{"key":"ConC","value":{}}""", verifyJsonInEqualsJsonOut = false)
   }

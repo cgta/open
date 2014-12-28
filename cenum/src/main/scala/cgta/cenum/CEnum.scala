@@ -87,6 +87,11 @@ trait CEnum {self =>
     //long-sized bit sets (classic flag programming pattern)
     final def flag64: Long = 1L << ordinal
 
+    //LEGACY
+    final def toIFlag: Int = flag32
+    final def toLFlag: Long = flag64
+
+
     def compare(that: EnumElement): Int = this.ordinal - that.ordinal
   }
 
@@ -98,12 +103,10 @@ trait CEnum {self =>
     }
   }
 
-  //Needs to be overrided in child class with final override val elements = CEnum.getElements(this)
-  def elements: IVec[EET]
   final lazy val toIVec: IVec[EET]         = elements
   final lazy val toIMap: IMap[String, EET] = IMap(toIVec.map(el => el.toString -> el): _*)
 
-  def fromString(s : String) : EET = toIMap(s)
+  def fromString(s: String): EET = toIMap(s)
 
   implicit lazy val ser: SerClass[EET] = new SerClass[EET]() {
     //    override lazy val schema = SerSchemas.Enum(CEnum.this.toIVec.map(_.toString))
@@ -135,4 +138,9 @@ trait CEnum {self =>
       }
     }
   }
+
+  //Needs to be overrided in child class with final override val elements = CEnum.getElements(this)
+  //final override val elements = CEnum.getElements(this)
+  def elements: IVec[EET]
+
 }

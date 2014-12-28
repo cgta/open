@@ -1,1 +1,1 @@
-addSbtPlugin("biz.cgta" % "sbt-x-sjs-plugin" % "0.1.4")
+addSbtPlugin("biz.cgta" % "sbt-x-sjs-plugin" % "0.1.6")

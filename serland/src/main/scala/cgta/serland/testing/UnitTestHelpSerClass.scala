@@ -1,6 +1,7 @@
 package cgta.serland
 package testing
 
+import cgta.serland.backends.SerAstOut
 import cgta.serland.backends.{SerPennyIn, SerPennyOut, SerPenny}
 import cgta.oscala.util.BinaryHelp
 import BinaryHelp.ByteArrayOutStreamWriter
@@ -68,6 +69,12 @@ trait UnitTestHelpSerClass {
           verify(f(instance), "Supplied Penny Does Not Parse to expected")(f(parsed))
           verify(pennyOut.toList, "Supplied Penny not the same as PennyOut")(penny.toList)
         }
+      }
+
+      locally {
+        val encoder = encoders.ast
+        val ast = encoder.encode(instance)
+        verify(f(instance), "AST Failure: " + ast)(f(encoder.decode(ast)))
       }
 
     } catch {

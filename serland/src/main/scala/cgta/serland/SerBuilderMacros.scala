@@ -34,5 +34,6 @@ trait SerBuilderMacros {
   def forSubs6[A, S1 <: A, S2 <: A, S3 <: A, S4 <: A, S5 <: A, S6 <: A]: SerClass[A] = macro SerBuilderMacrosImpl.forSubs6[A, S1, S2, S3, S4, S5, S6]
   def forSubs7[A, S1 <: A, S2 <: A, S3 <: A, S4 <: A, S5 <: A, S6 <: A, S7 <: A]: SerClass[A] = macro SerBuilderMacrosImpl.forSubs7[A, S1, S2, S3, S4, S5, S6, S7]
   def forSubs8[A, S1 <: A, S2 <: A, S3 <: A, S4 <: A, S5 <: A, S6 <: A, S7 <: A, S8 <: A]: SerClass[A] = macro SerBuilderMacrosImpl.forSubs8[A, S1, S2, S3, S4, S5, S6, S7, S8]
+  def forSubs9[A, S1 <: A, S2 <: A, S3 <: A, S4 <: A, S5 <: A, S6 <: A, S7 <: A, S8 <: A, S9 <: A]: SerClass[A] = macro SerBuilderMacrosImpl.forSubs9[A, S1, S2, S3, S4, S5, S6, S7, S8, S9]
   //Add more here when needed, also add them into the macro impls.
 }

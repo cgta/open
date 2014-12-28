@@ -4,7 +4,7 @@ package backends
 import cgta.serland.SerHints.Ser32Hints.Ser32Hint
 import cgta.serland.SerHints.Ser64Hints.Ser64Hint
 import cgta.serland.backends.SerJsonIn.{LastFieldStatus, LastFieldPresent, LastFieldMissing, LastFieldUnknown}
-import cgta.serland.json.{Json, JsonNodes}
+import cgta.serland.json.{JsonIO, JsonNodes}
 
 //////////////////////////////////////////////////////////////
 // Copyright (c) 2011 Ben Jackman, Jeff Gomberg
@@ -17,11 +17,11 @@ import cgta.serland.json.{Json, JsonNodes}
 object SerJsonIn {
   def fromJsonString[A: SerClass](s: String, d: JsonDerefer = null): A = {
     val ser = implicitly[SerClass[A]]
-    ser.read(new SerJsonIn(Json.read(s), derefer = d.nullSafe))
+    ser.read(new SerJsonIn(JsonIO.read(s), derefer = d.nullSafe))
   }
 
   def apply(s: String): SerJsonIn = {
-    new SerJsonIn(Json.read(s))
+    new SerJsonIn(JsonIO.read(s))
   }
 
   sealed trait LastFieldStatus {

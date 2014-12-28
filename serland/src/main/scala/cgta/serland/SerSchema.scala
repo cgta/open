@@ -71,8 +71,10 @@ object SerSchemas {
   }
 //  object XSeq {implicit val ser = forCaseClass("seqType", "schema")(XSeq.apply)}
   case class XSeq(seqType: XSeqType, schema: SerSchema) extends SerSchema
+
+  case class XEither(left : SerSchema, right : SerSchema) extends SerSchema
 //  object XEnum {implicit val ser = forCaseClass("enumType", "elements")(XEnum.apply)}
-  case class XEnum(enumType: XEnumType, elements: IVec[XEnumElement]) extends SerSchema
+  case class XEnum(enumType: XEnumType, elements: Seq[XEnumElement]) extends SerSchema
 //  object XBoolean {implicit val ser = forCaseClass()(XBoolean.apply)}
   case class XBoolean() extends SerSchema
 //  object XChar {implicit val ser = forCaseClass()(XChar.apply)}

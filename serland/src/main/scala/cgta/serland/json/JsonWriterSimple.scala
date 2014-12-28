@@ -16,9 +16,8 @@ object JsonStringBuilder {
 
 trait JsonStringBuilder {
   def bool(b: Boolean): JsonStringBuilder
-  def int32(n: Int): JsonStringBuilder
-  def int64(n: Long): JsonStringBuilder
-  def dbl(n: Double): JsonStringBuilder
+  def nul(): JsonStringBuilder
+  def num(s : String) : JsonStringBuilder
   def raw(s: String): JsonStringBuilder
   def escaped(s: String): JsonStringBuilder = {
     var i = 0
@@ -26,7 +25,7 @@ trait JsonStringBuilder {
       (s.charAt(i): @switch) match {
         case '\\' => raw("\\\\")
         case '"' => raw("\\\"")
-        case '/' => raw("\\/")
+//        case '/' => raw("\\/")
         case '\b' => raw("\\b")
         case '\t' => raw("\\t")
         case '\n' => raw("\\n")
@@ -78,10 +77,9 @@ class JsonWriterCompact(val out: JsonStringBuilder) extends JsonWriter {
 
   override def writeStringField(k: String, v: String) { writeFieldName(k); writeString(v) }
   override def writeString(s: String) { addCommaIfNeeded(); out.q.escaped(s).q; setNeedsComma() }
-  override def writeInt(n: Int) { addCommaIfNeeded(); out.int32(n); setNeedsComma() }
-  override def writeLong(n: Long) { addCommaIfNeeded(); out.int64(n); setNeedsComma() }
-  override def writeDouble(n: Double) { addCommaIfNeeded(); out.dbl(n); setNeedsComma() }
   override def writeBoolean(b: Boolean) { addCommaIfNeeded(); out.bool(b); setNeedsComma() }
+  override def writeNumber(n: String) { addCommaIfNeeded(); out.num(n); setNeedsComma() }
+  override def writeNull() { addCommaIfNeeded(); out.nul(); setNeedsComma() }
 
   override def writeFieldName(s: String) = {
     addCommaIfNeeded()
@@ -148,10 +146,9 @@ class JsonWriterPretty(val out: JsonStringBuilder) extends JsonWriter {
 
   override def writeStringField(k: String, v: String) { writeFieldName(k); writeString(v) }
   override def writeString(s: String) { startVal(); out.q.escaped(s).q; endVal() }
-  override def writeInt(n: Int) { startVal(); out.int32(n); endVal() }
-  override def writeLong(n: Long) { startVal(); out.int64(n); endVal() }
-  override def writeDouble(n: Double) { startVal(); out.dbl(n); endVal() }
   override def writeBoolean(b: Boolean) { startVal(); out.bool(b); endVal() }
+  override def writeNumber(n: String) { startVal(); out.num(n); endVal() }
+  override def writeNull() { startVal(); out.nul(); endVal() }
 
   override def writeFieldName(s: String) = {
     inEmptyContainer = false

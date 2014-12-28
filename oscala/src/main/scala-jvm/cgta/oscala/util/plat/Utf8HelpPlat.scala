@@ -1,6 +1,8 @@
 package cgta.oscala
 package util.plat
 
+import java.nio.charset.StandardCharsets
+
 import cgta.oscala.util.Utf8Help
 
 //////////////////////////////////////////////////////////////
@@ -12,6 +14,6 @@ import cgta.oscala.util.Utf8Help
 //////////////////////////////////////////////////////////////
 
 trait Utf8HelpPlat extends Utf8Help {
-  override def toBytes(s: String): Array[Byte] = s.getBytes("UTF-8")
-  override def fromBytes(bs: Array[Byte]): String = new String(bs, "UTF-8")
+  override def toBytes(s: String): Array[Byte] = s.getBytes(StandardCharsets.UTF_8)
+  override def fromBytes(bs: Array[Byte]): String = new String(bs, StandardCharsets.UTF_8)
 }

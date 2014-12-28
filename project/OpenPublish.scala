@@ -5,7 +5,7 @@ import ReleaseStateTransformations._
 import ReleasePlugin._
 import ReleaseKeys._
 import Utilities._
-import com.typesafe.sbt.SbtPgp.PgpKeys._
+import com.typesafe.sbt.pgp.PgpKeys._
 
 object Publish {
   lazy val publishSignedAction = { st: State =>

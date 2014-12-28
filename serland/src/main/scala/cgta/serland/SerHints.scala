@@ -24,14 +24,14 @@ object SerHints {
 
   object Ser32Hints {
     sealed trait Ser32Hint
-    object UVarInt32 extends Ser32Hint
-    object SVarInt32 extends Ser32Hint
+    case object UVarInt32 extends Ser32Hint
+    case object SVarInt32 extends Ser32Hint
   }
 
   object Ser64Hints {
     sealed trait Ser64Hint
-    object UVarInt64 extends Ser64Hint
-    object SVarInt64 extends Ser64Hint
-    object Fixed64 extends Ser64Hint
+    case object UVarInt64 extends Ser64Hint
+    case object SVarInt64 extends Ser64Hint
+    case object Fixed64 extends Ser64Hint
   }
 }

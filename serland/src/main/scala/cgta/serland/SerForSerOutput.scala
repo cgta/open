@@ -1,5 +1,7 @@
 package cgta.serland
 
+import cgta.serland.gen.Gen
+
 
 //////////////////////////////////////////////////////////////
 // Copyright (c) 2011 Ben Jackman, Jeff Gomberg
@@ -18,9 +20,11 @@ package cgta.serland
  */
 object SerForSerOutput {
 
-  implicit val serW = new SerWritable[SerForSerOutput] with SerSchemable[SerForSerOutput] {
+  implicit val serW = new SerClass[SerForSerOutput] {
     override def write(a: SerForSerOutput, out: SerOutput) { a.ser.write(a.x, out) }
     override def schema = SerSchemas.XUnknown(SerSchemas.XSerOutput)
+    override def gen: Gen[SerForSerOutput] = sys.error("Cannot gen a SerForSerOutput")
+    override def read(in: SerInput): SerForSerOutput = READ_ERROR("Cannot read SerForSerOutput")
   }
 
   def apply[AA: SerWritable](value: AA) = new SerForSerOutput {

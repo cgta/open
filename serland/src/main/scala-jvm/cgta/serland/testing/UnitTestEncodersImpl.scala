@@ -2,6 +2,7 @@ package cgta.serland
 package testing
 
 import cgta.serland.backends.{SerBsonIn, SerBsonOut}
+import cgta.serland.testing.UnitTestEncoders.Tester
 
 
 //////////////////////////////////////////////////////////////

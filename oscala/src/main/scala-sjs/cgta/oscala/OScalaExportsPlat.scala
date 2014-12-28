@@ -1,17 +1,8 @@
 package cgta.oscala
 
-import cgta.oscala.sjs.extensions.{SjsSeqExtensions, SjsArrayExtensions, SjsAnyExtensions, JsArrayExtensions, JsAnyExtensions}
-import cgta.oscala.sjs.lang.JsConsole
+import cgta.oscala.sjs.extensions.{JsAnyExtensions, JsArrayExtensions, SjsAnyExtensions, SjsArrayExtensions, SjsSeqExtensions}
 
-
-//////////////////////////////////////////////////////////////
-// Copyright (c) 2014 Ben Jackman, Jeff Gomberg
-// All Rights Reserved
-// please contact ben@jackman.biz or jeff@cgtanalytics.com
-// for licensing inquiries
-// Created by bjackman @ 4/28/14 3:50 PM
-//////////////////////////////////////////////////////////////
-
+import scala.concurrent.ExecutionContext
 import scala.language.dynamics
 import scala.scalajs.js
 
@@ -29,7 +20,9 @@ class JsSetAll[A <: js.Any](val x: A) extends scala.Dynamic {
   }
 }
 
-trait OScalaExportsPlat {
+trait OScalaExportsPlat extends OScalaExportsShared {
+
+  override val defaultExecutionContext: ExecutionContext = scalajs.concurrent.JSExecutionContext.queue
 
   //  val console   = org.scalajs.dom.window.console
   //Results in

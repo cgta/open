@@ -1,7 +1,7 @@
 package cgta.serland
 
 import cgta.serland.backends.{SerJsonIn, SerJsonOut, JsonDerefer}
-import cgta.serland.json.{Json, JsonNodes}
+import cgta.serland.json.{JsonIO, JsonNodes}
 import cgta.otest.FunSuite
 
 //////////////////////////////////////////////////////////////
@@ -41,7 +41,7 @@ object TestJsonRefs extends FunSuite {
         def getNode(jpath: String): JsonNodes.Value = {
           paths ::= jpath
           val ss = SerJsonOut.toJsonCompact(b)
-          Json.read(ss)
+          JsonIO.read(ss)
         }
       }
       val res = SerJsonIn.fromJsonString[SampleAP](s, derefer)

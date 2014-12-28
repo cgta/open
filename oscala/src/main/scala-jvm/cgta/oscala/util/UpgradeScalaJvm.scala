@@ -1,6 +1,8 @@
 package cgta.oscala
+package util
 
-import scala.concurrent.ExecutionContext
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
 
 //////////////////////////////////////////////////////////////
@@ -8,9 +10,10 @@ import scala.concurrent.ExecutionContext
 // All Rights Reserved
 // please contact ben@jackman.biz or jeff@cgtanalytics.com
 // for licensing inquiries
-// Created by bjackman @ 7/16/14 1:05 PM
+// Created by bjackman @ 12/6/14 10:11 PM
 //////////////////////////////////////////////////////////////
 
-trait OScalaExportsPlat extends OScalaExportsShared {
-  override val defaultExecutionContext: ExecutionContext = ExecutionContext.global
+object UpgradeScalaJvm {
+  lazy val lineReader = new BufferedReader(new InputStreamReader(System.in))
+  def readLine() = lineReader.readLine()
 }

@@ -1,6 +1,7 @@
-package cgta.oscala
+package cgta.serland
+package json
 
-import scala.concurrent.ExecutionContext
+import cgta.otest.FunSuite
 
 
 //////////////////////////////////////////////////////////////
@@ -8,9 +9,13 @@ import scala.concurrent.ExecutionContext
 // All Rights Reserved
 // please contact ben@jackman.biz or jeff@cgtanalytics.com
 // for licensing inquiries
-// Created by bjackman @ 7/16/14 1:05 PM
+// Created by bjackman @ 12/16/14 11:21 AM
 //////////////////////////////////////////////////////////////
 
-trait OScalaExportsPlat extends OScalaExportsShared {
-  override val defaultExecutionContext: ExecutionContext = ExecutionContext.global
+object TestJsonIO extends FunSuite {
+
+  test("numbers are unchanged") {
+    Assert.isEquals("500",JsonIO.writeCompact(JsonIO.read("500")))
+  }
+
 }
