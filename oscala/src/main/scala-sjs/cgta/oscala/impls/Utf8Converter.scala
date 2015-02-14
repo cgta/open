@@ -14,11 +14,11 @@ import scala.scalajs.js
 object Utf8Converter {
 
   def toBytes(s: String): Array[Byte] = {
-    val out = new js.Array[js.Number]()
+    val out = new js.Array[Double]()
     var n = 0
 
     while (n < s.length) {
-      val c = (s: js.prim.String).charCodeAt(n)
+      val c = js.Dynamic.global.String.prototype.charCodeAt.call(s, n).asInstanceOf[Int]
 
       if (c < 128) {
         out.push(c)
@@ -34,7 +34,7 @@ object Utf8Converter {
       n += 1
     }
 
-    def toByte(x: js.Number): Byte = {
+    def toByte(x: Double): Byte = {
       val y: Double = x
       y.toByte
     }
@@ -42,24 +42,24 @@ object Utf8Converter {
     out.iterator.map(toByte).toArray
   }
   def fromBytes(bytes: Array[Byte]): String = {
-    val out = new js.Array[js.String]()
+    val out = new js.Array[String]()
     var pos = 0
 
     while (pos < bytes.length) {
       val c1 = bytes(pos).toInt & 0xFF
       pos += 1
       if (c1 < 128) {
-        out.push(js.Dynamic.global.String.fromCharCode(c1).asInstanceOf[js.String])
+        out.push(js.Dynamic.global.String.fromCharCode(c1).asInstanceOf[String])
       } else if (c1 > 191 && c1 < 224) {
         val c2 = bytes(pos)
         pos += 1
-        out.push(js.Dynamic.global.String.fromCharCode((c1 & 31) << 6 | c2 & 63).asInstanceOf[js.String])
+        out.push(js.Dynamic.global.String.fromCharCode((c1 & 31) << 6 | c2 & 63).asInstanceOf[String])
       } else {
         val c2 = bytes(pos)
         pos += 1
         val c3 = bytes(pos)
         pos += 1
-        out.push(js.Dynamic.global.String.fromCharCode((c1 & 15) << 12 | (c2 & 63) << 6 | c3 & 63).asInstanceOf[js.String])
+        out.push(js.Dynamic.global.String.fromCharCode((c1 & 15) << 12 | (c2 & 63) << 6 | c3 & 63).asInstanceOf[String])
       }
     }
     out.join("").toString

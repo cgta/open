@@ -1,4 +1,5 @@
 package cgta.oscala
+package util
 
 import scala.concurrent.ExecutionContext
 
@@ -8,7 +9,9 @@ import scala.concurrent.ExecutionContext
 // All Rights Reserved
 // please contact ben@jackman.biz or jeff@cgtanalytics.com
 // for licensing inquiries
-// Created by bjackman @ 7/16/14 1:05 PM
+// Created by bjackman @ 11/11/14 8:04 AM
 //////////////////////////////////////////////////////////////
 
-trait OScalaExportsPlat extends OScalaExportsShared
+trait ConcHelpPlat extends ConcHelp {
+  final override lazy val defaultExecutionContext: ExecutionContext = ExecutionContext.global
+}

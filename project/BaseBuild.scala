@@ -1,17 +1,15 @@
-import LibsHelp.{Lib, CrossLib, JvmLib, SjsLib}
 import cgta.sbtxsjs.SbtXSjsPlugin.XSjsProjects
 import com.typesafe.sbt.packager.universal.UniversalKeys
 import com.typesafe.sbt.web.SbtWeb
-import com.typesafe.sbteclipse.core.EclipsePlugin.EclipseKeys
 import de.johoop.jacoco4sbt.JacocoPlugin
 import org.sbtidea.SbtIdeaPlugin
 import sbt.Keys._
 import sbt._
 import sbtassembly.Plugin.AssemblyKeys
-import sbtrelease.ReleasePlugin
 
-import scala.scalajs.sbtplugin.ScalaJSPlugin
-import scala.scalajs.sbtplugin.ScalaJSPlugin.ScalaJSKeys
+import org.scalajs.sbtplugin.ScalaJSPlugin
+import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
+//import org.scalajs.sbtplugin.ScalaJSPlugin.ScalaJSKeys
 import com.typesafe.sbt.less.Import.LessKeys
 import com.typesafe.sbt.web.Import.Assets
 
@@ -20,16 +18,6 @@ object BaseBuild extends Build with UniversalKeys {
   sys.props("scalac.patmat.analysisBudget") = "512"
   //org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME).asInstanceOf[ch.qos.logback.classic.Logger].setLevel(ch.qos.logback.classic.Level.INFO)
 
-  implicit class XSjsProjectsExtensions(val p: XSjsProjects) extends AnyVal {
-    def addLib(d: JvmLib): XSjsProjects = p.settingsJvm(d.settings: _*)
-    def addLib(d: SjsLib): XSjsProjects = p.settingsSjs(d.settings: _*)
-    def addLib(d: CrossLib): XSjsProjects = p.mapSelf(d.mapCross)
-    def addLibs(ds: Lib*): XSjsProjects = ds.foldLeft(p) {
-      case (p: XSjsProjects, d: JvmLib) => p addLib d
-      case (p: XSjsProjects, d: SjsLib) => p addLib d
-      case (p: XSjsProjects, d: CrossLib) => p addLib d
-    }
-  }
 
 
   lazy val basicSettings = scalacSettings ++
@@ -39,7 +27,7 @@ object BaseBuild extends Build with UniversalKeys {
   lazy val noScaladocSettings = Seq[Setting[_]](publishArtifact in(Compile, packageDoc) := Publish.includeScaladoc)
 
   lazy val promptSettings = Seq[Setting[_]](
-    shellPrompt <<= (thisProjectRef, version) { (id, v) => _ => "orange:%s:%s> ".format(id.project, v)}
+    shellPrompt <<= (thisProjectRef, version) { (id, v) => _ => "ultimate:%s:%s> ".format(id.project, v)}
   )
 
   lazy val scalacSettings = Seq[Setting[_]](
@@ -93,24 +81,23 @@ object BaseBuild extends Build with UniversalKeys {
   }
 
   def sjsProject(name: String, p: Project) = {
-    p.settings(basicSettings ++ ScalaJSPlugin.scalaJSSettings: _*)
+    p.settings(basicSettings : _*)
+      .enablePlugins(ScalaJSPlugin)
       .settings(scalacOptions += "-language:reflectiveCalls")
       .settings(SbtIdeaPlugin.ideaBasePackage := Some(getBasePackageName(name, "-sjs")))
       .settings(Libs.Otest.settingsSjs: _*)
-      .settings(cgta.otest.OtestPlugin.settingsSjs: _ *)
       .settings(Publish.settingsSjs: _*)
       .settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
-      .settings(test in Test := (test in(Test, ScalaJSKeys.fastOptStage)).value)
-      .settings(testOnly in Test := (testOnly in(Test, ScalaJSKeys.fastOptStage)).evaluated)
-      .settings(testQuick in Test := (testQuick in(Test, ScalaJSKeys.fastOptStage)).evaluated)
+//      .settings(test in Test := (test in(Test, FastOptStage)).value)
+//      .settings(testOnly in Test := (testOnly in(Test, FastOptStage)).evaluated)
+//      .settings(testQuick in Test := (testQuick in(Test, FastOptStage)).evaluated)
   }
 
   def jvmProject(name: String, p: Project) = {
     p.settings(basicSettings: _*)
       .settings(SbtIdeaPlugin.ideaBasePackage := Some(getBasePackageName(name, "-jvm")))
-      .settings(Libs.Otest.settingsJvm: _*)
       .settings(testFrameworks := Nil)
-      .settings(cgta.otest.OtestPlugin.settingsJvm: _ *)
+      .settings(Libs.Otest.settingsJvm: _*)
       .configs(Integration.cfg)
       .settings(Integration.settings: _*)
       .settings(Publish.settingsJvm: _*)
@@ -130,6 +117,7 @@ object BaseBuild extends Build with UniversalKeys {
     .settingsBase(testQuick := {})
     .settingsBase(testOnly := {})
     .settingsBase(compile := {sbt.inc.Analysis.Empty})
+    .settingsBase(compile in Test := {sbt.inc.Analysis.Empty})
     .mapJvm(jvmProject(name, _))
     .mapSjs(sjsProject(name, _))
     .settingsJvmTest(basicSettings: _*)
@@ -153,34 +141,46 @@ object BaseBuild extends Build with UniversalKeys {
     p
   }
 
-  def playProject(name: String, sjsProjects: Seq[sbt.ProjectReference]) = {
-    lazy val sjsForPlayOutDir = Def.settingKey[File]("directory for javascript files output by scalajs")
-    lazy val lastSjsProject = sjsProjects.last
+//  def playProject(name: String, sjsProjects: Seq[sbt.ProjectReference]) = {
+//    lazy val sjsForPlayOutDir = Def.settingKey[File]("directory for javascript files output by scalajs")
+//    lazy val lastSjsProject = sjsProjects.last
+//
+//    lazy val sjsTasks = List(
+////      ScalaJSKeys.packageExternalDepsJS,
+////      ScalaJSKeys.packageInternalDepsJS,
+////      ScalaJSKeys.packageExportedProductsJS,
+//      fastOptJS,
+//      fullOptJS)
+//
+//    Project("playweb", file("playweb"))
+//      .enablePlugins(play.PlayScala, SbtWeb)
+//      .settings(libraryDependencies ++= Libs.Play.exclusiveDeps)
+//      .aggregate(sjsProjects: _*)
+//      .settings(publish := {})
+//      .settings(SbtIdeaPlugin.ideaBasePackage := Some(getBasePackageName(name)))
+//      //      .settings(play.Project.playScalaSettings: _*)
+//      //      .settings(com.jamesward.play.BrowserNotifierPlugin.livereload: _*)
+//      .settings(basicSettings: _*)
+//      .settings(sjsForPlayOutDir := (crossTarget in Compile).value / "classes" / "public" / "javascripts",
+//        compile in Compile <<= (compile in Compile) dependsOn (fastOptJS in(lastSjsProject, Compile)),
+//        includeFilter in(Assets, LessKeys.less) := "*.less",
+//        dist <<= dist dependsOn (fullOptJS in(lastSjsProject, Compile))
+//      )
+//      .settings(sjsTasks.map(t => crossTarget in(lastSjsProject, Compile, t) := sjsForPlayOutDir.value): _*)
+//  }
 
-    lazy val sjsTasks = List(
-//      ScalaJSKeys.packageExternalDepsJS,
-//      ScalaJSKeys.packageInternalDepsJS,
-//      ScalaJSKeys.packageExportedProductsJS,
-      ScalaJSKeys.fastOptJS,
-      ScalaJSKeys.fullOptJS)
+  def playProject(name: String) = {
 
     Project("playweb", file("playweb"))
       .enablePlugins(play.PlayScala, SbtWeb)
       .settings(libraryDependencies ++= Libs.Play.exclusiveDeps)
-      .aggregate(sjsProjects: _*)
       .settings(publish := {})
       .settings(SbtIdeaPlugin.ideaBasePackage := Some(getBasePackageName(name)))
       //      .settings(play.Project.playScalaSettings: _*)
       //      .settings(com.jamesward.play.BrowserNotifierPlugin.livereload: _*)
       .settings(basicSettings: _*)
-      .settings(sjsForPlayOutDir := (crossTarget in Compile).value / "classes" / "public" / "javascripts",
-        compile in Compile <<= (compile in Compile) dependsOn (ScalaJSKeys.fastOptJS in(lastSjsProject, Compile)),
-        includeFilter in(Assets, LessKeys.less) := "*.less",
-        dist <<= dist dependsOn (ScalaJSKeys.fullOptJS in(lastSjsProject, Compile))
-      )
-      .settings()
-      .settings(sjsTasks.map(t => crossTarget in(lastSjsProject, Compile, t) := sjsForPlayOutDir.value): _*)
   }
+
 
 
 }

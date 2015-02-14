@@ -17,7 +17,12 @@ import cgta.serland.json.{JsonIO, JsonNodes}
 object SerJsonIn {
   def fromJsonString[A: SerClass](s: String, d: JsonDerefer = null): A = {
     val ser = implicitly[SerClass[A]]
-    ser.read(new SerJsonIn(JsonIO.read(s), derefer = d.nullSafe))
+    try {
+      ser.read(new SerJsonIn(JsonIO.read(s), derefer = d.nullSafe))
+    } catch {
+      case e: Throwable =>
+        READ_ERROR(s"Unable to parse [$s]", e)
+    }
   }
 
   def apply(s: String): SerJsonIn = {

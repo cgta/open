@@ -6,7 +6,6 @@ import sbt.CrossVersion
 //A list of libraries
 object OldLibs {
 
-  val apacheVersion = "2.4"
 
   val slf4jForTests = List(
     "org.slf4j" % "slf4j-api" % "1.5.6" % "test",
@@ -20,7 +19,7 @@ object OldLibs {
   val javolution = List("org.javolution" % "javolution-cgta-java" % "6.1.0")
   val slick      = List("com.typesafe.slick" %% "slick" % "2.1.0" exclude("org.slf4j", "slf4j-api"))
 
-  val apacheCommonsIo = List("commons-io" % "commons-io" % apacheVersion)
+
 
   val h2         = List("com.h2database" % "h2" % "1.1.118")
   val postgresql = List("postgresql" % "postgresql" % "9.1-901.jdbc4")
@@ -37,7 +36,6 @@ object OldLibs {
 
   object CdpOnly {
     val jackson           = List("org.codehaus.jackson" % "jackson-mapper-lgpl" % "1.4.3")
-    val apacheCommonsLang = List("commons-lang" % "commons-lang" % apacheVersion)
     val paranamer         = List("com.thoughtworks.paranamer" % "paranamer" % "2.0")
 
     val slf4jApi = List("org.slf4j" % "slf4j-api" % "1.6.6")

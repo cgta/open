@@ -19,74 +19,74 @@ object TWEENJS extends js.Object {
   // Project: https://github.com/sole/tween.js/
   // Definitions by: sunetos <https://github.com/sunetos>, jzarnikov <https://github.com/jzarnikov>
   // Definitions: https://github.com/borisyankov/DefinitelyTyped
-  val REVISION: js.String = ???
-  def getAll(): js.Array[Tween] = ???
-  def removeAll(): Unit = ???
-  def add(tween: Tween): Unit = ???
-  def remove(tween: Tween): Unit = ???
-  def update(time: js.Number = ???): js.Boolean = ???
+  val REVISION: String = js.native
+  def getAll(): js.Array[Tween] = js.native
+  def removeAll(): Unit = js.native
+  def add(tween: Tween): Unit = js.native
+  def remove(tween: Tween): Unit = js.native
+  def update(time: Double = js.native): Boolean = js.native
 
-  val Easing       : Tween.Easing        = ???
-  val Interpolation: Tween.Interpolation = ???
+  val Easing       : Tween.Easing        = js.native
+  val Interpolation: Tween.Interpolation = js.native
 }
 
 @JSName("TWEEN.Tween")
-class Tween(obj: js.Any = ???) extends js.Object {
-  def to(properties: js.Any, duration: js.Number): Tween = ???
-  def start(time: js.Number = ???): Tween = ???
-  def stop(): Tween = ???
-  def delay(amount: js.Number): Tween = ???
-  def easing(easing: js.Function1[js.Number, js.Number]): Tween = ???
-  def interpolation(interpolation: js.Function2[js.Array[js.Number], js.Number, js.Number]): Tween = ???
-  def chain(tweens: Tween*): Tween = ???
-  def onStart(callback: js.Function1[js.Any, Unit]): Tween = ???
-  def onUpdate(callback: js.Function1[js.Any, Unit]): Tween = ???
-  def onComplete(callback: js.Function1[js.Any, Unit]): Tween = ???
-  def onStart(callback: js.Function0[Unit]): Tween = ???
-  def onUpdate(callback: js.Function0[Unit]): Tween = ???
-  def onComplete(callback: js.Function0[Unit]): Tween = ???
-  def update(time: js.Number): js.Boolean = ???
-  def repeat(times: js.Number): Tween = ???
-  def yoyo(enable: js.Boolean): Tween = ???
+class Tween(obj: js.Any = js.native) extends js.Object {
+  def to(properties: js.Any, duration: Double): Tween = js.native
+  def start(time: Double = js.native): Tween = js.native
+  def stop(): Tween = js.native
+  def delay(amount: Double): Tween = js.native
+  def easing(easing: js.Function1[Double, Double]): Tween = js.native
+  def interpolation(interpolation: js.Function2[js.Array[Double], Double, Double]): Tween = js.native
+  def chain(tweens: Tween*): Tween = js.native
+  def onStart(callback: js.Function1[js.Any, Unit]): Tween = js.native
+  def onUpdate(callback: js.Function1[js.Any, Unit]): Tween = js.native
+  def onComplete(callback: js.Function1[js.Any, Unit]): Tween = js.native
+  def onStart(callback: js.Function0[Unit]): Tween = js.native
+  def onUpdate(callback: js.Function0[Unit]): Tween = js.native
+  def onComplete(callback: js.Function0[Unit]): Tween = js.native
+  def update(time: Double): Boolean = js.native
+  def repeat(times: Double): Tween = js.native
+  def yoyo(enable: Boolean): Tween = js.native
 }
 
 object Tween {
   trait InOutEasingFns extends js.Object {
-    def In(x: js.Number): js.Number = ???
-    def Out(x: js.Number): js.Number = ???
-    def InOut(x: js.Number): js.Number = ???
+    def In(x: Double): Double = js.native
+    def Out(x: Double): Double = js.native
+    def InOut(x: Double): Double = js.native
   }
 
   trait LinearEasingFns extends js.Object {
-    def None(x: js.Number): js.Number
+    def None(x: Double): Double = js.native
   }
 
 
   trait Easing extends js.Object {
-    val Linear     : LinearEasingFns = ???
-    val Quadratic  : InOutEasingFns  = ???
-    val Cubic      : InOutEasingFns  = ???
-    val Quartic    : InOutEasingFns  = ???
-    val Quintic    : InOutEasingFns  = ???
-    val Sinusoidal : InOutEasingFns  = ???
-    val Exponential: InOutEasingFns  = ???
-    val Circular   : InOutEasingFns  = ???
-    val Elastic    : InOutEasingFns  = ???
-    val Back       : InOutEasingFns  = ???
-    val Bounce     : InOutEasingFns  = ???
+    val Linear     : LinearEasingFns = js.native
+    val Quadratic  : InOutEasingFns  = js.native
+    val Cubic      : InOutEasingFns  = js.native
+    val Quartic    : InOutEasingFns  = js.native
+    val Quintic    : InOutEasingFns  = js.native
+    val Sinusoidal : InOutEasingFns  = js.native
+    val Exponential: InOutEasingFns  = js.native
+    val Circular   : InOutEasingFns  = js.native
+    val Elastic    : InOutEasingFns  = js.native
+    val Back       : InOutEasingFns  = js.native
+    val Bounce     : InOutEasingFns  = js.native
   }
 
   trait InterpolationUtils extends js.Object {
-    def Linear(p0: js.Number, p1: js.Number, t: js.Number): js.Number = ???
-    def Bernstein(n: js.Number, i: js.Number): js.Number = ???
-    def Factorial(n: js.Number): js.Number = ???
+    def Linear(p0: Double, p1: Double, t: Double): Double = js.native
+    def Bernstein(n: Double, i: Double): Double = js.native
+    def Factorial(n: Double): Double = js.native
   }
 
   trait Interpolation extends js.Object {
-    def Linear(v: js.Array[js.Number], k: js.Number): js.Number = ???
-    def Bezier(v: js.Array[js.Number], k: js.Number): js.Number = ???
-    def CatmullRom(v: js.Array[js.Number], k: js.Number): js.Number = ???
-    val Utils: InterpolationUtils = ???
+    def Linear(v: js.Array[Double], k: Double): Double = js.native
+    def Bezier(v: js.Array[Double], k: Double): Double = js.native
+    def CatmullRom(v: js.Array[Double], k: Double): Double = js.native
+    val Utils: InterpolationUtils = js.native
   }
 }
 

@@ -1,6 +1,8 @@
 package cgta.oscala
 package util
 
+import java.io.InputStream
+
 
 //////////////////////////////////////////////////////////////
 // Copyright (c) 2014 Ben Jackman, Jeff Gomberg
@@ -13,7 +15,7 @@ package util
 object BinaryHelp {
 
   //http://stackoverflow.com/questions/1174505/counting-trailing-zeros-of-numbers-resulted-from-factorial
-  def trailingZeros(n: Long) : Int = {
+  def trailingZeros(n: Long): Int = {
     val isEven = (n.toInt & 1L) == 0
     var m = n
     var c = 0
@@ -287,6 +289,13 @@ object BinaryHelp {
     }
   }
 
+  object InStreamReader {
+    def apply(is: InputStream) = new InStreamReader {
+      override def read(): Int = is.read()
+      override def read(xs: Array[Byte], offset: Int, len: Int): Int = is.read(xs, offset, len)
+    }
+  }
+
   trait InStreamReader {
     def read(): Int
     def read(xs: Array[Byte], offset: Int, len: Int): Int
@@ -334,7 +343,7 @@ object BinaryHelp {
   }
 
   object InStream {
-    def wrap(bs : Array[Byte]) = new ByteArrayInStreamReader(bs)
+    def wrap(bs: Array[Byte]) = new ByteArrayInStreamReader(bs)
     def readByte(implicit ins: InStreamReader): Byte = {
       val x = ins.read()
       if (x < 0) sys.error("EOF") else x.toByte

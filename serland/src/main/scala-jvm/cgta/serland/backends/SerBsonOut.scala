@@ -124,9 +124,9 @@ class SerBsonOut(g: SerBsonBuilder, override val isHumanReadable: Boolean = true
 
   override def writeOneOfBegin(keyName: String, keyId: Int) = {
     g.writeStartObject()
-    g.writeFieldName("k")
+    g.writeFieldName("key")
     g.writeString(keyName)
-    g.writeFieldName("v")
+    g.writeFieldName("value")
   }
   override def writeOneOfEnd() { g.writeEndObject() }
 

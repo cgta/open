@@ -36,33 +36,6 @@ object TestSeqExtensions extends FunSuite {
     Assert.isEquals(Seq(2, 23, 44), xs.takeUntil(44 =?= _))
   }
 
-  test("MinOpt") {
-    val xs = Seq.empty[Int]
-    val ys = Seq(2, 5, 7, 40, -32)
-    Assert.isEquals(None, xs.minOpt)
-    Assert.isEquals(Some(-32), ys.minOpt)
 
-  }
-
-  test("MaxOpt") {
-    val xs = Seq.empty[Int]
-    val ys = Seq(2, 5, Int.MaxValue, 7, 40)
-
-    Assert.isEquals(None, xs.maxOpt)
-    Assert.isEquals(Some(Int.MaxValue), ys.maxOpt)
-
-  }
-
-  test("MinByOpt") {
-    val xs = months
-    Assert.isEquals(Some(4 -> "Apr"), xs.minByOpt(x => x._2))
-    Assert.isEquals(Some(1 -> "Jan"), xs.minByOpt(x => x._1))
-  }
-
-  test("MaxByOpt") {
-    val xs = months
-    Assert.isEquals(Some(5 -> "May"), xs.maxByOpt(x => x._2))
-    Assert.isEquals(Some(5 -> "May"), xs.maxByOpt(x => x._1))
-  }
 
 }

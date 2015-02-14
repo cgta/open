@@ -112,17 +112,23 @@ class JsonWriterPretty(val out: JsonStringBuilder) extends JsonWriter {
   private var needsCommaStack = List(false)
   private var depth           = 0
   private var writingField = false
-  private var inEmptyContainer = false
+  private var isEmptyContainerStack = List(true)
 
   def get(): String = out.get()
 
   private def push() {
     needsCommaStack ::= false
+    isEmptyContainerStack ::= true
     depth += 1
   }
   private def pop() {
     needsCommaStack = needsCommaStack.tail
+    isEmptyContainerStack = isEmptyContainerStack.tail
     depth -= 1
+  }
+
+  private def setContainerNonEmpty() {
+    isEmptyContainerStack = false :: isEmptyContainerStack.tail
   }
 
   private def indent() {
@@ -151,7 +157,7 @@ class JsonWriterPretty(val out: JsonStringBuilder) extends JsonWriter {
   override def writeNull() { startVal(); out.nul(); endVal() }
 
   override def writeFieldName(s: String) = {
-    inEmptyContainer = false
+    setContainerNonEmpty()
     addComma_?()
     indent()
     writingField = true
@@ -159,7 +165,7 @@ class JsonWriterPretty(val out: JsonStringBuilder) extends JsonWriter {
   }
 
   private def startVal() {
-    inEmptyContainer = false
+    setContainerNonEmpty()
     if (!writingField){
       //Probably in an array
       addComma_?()
@@ -173,7 +179,10 @@ class JsonWriterPretty(val out: JsonStringBuilder) extends JsonWriter {
   }
 
   private def writeStartContainer(brace: String) {
-    inEmptyContainer = true
+    //FYI This sets the container that is holding this one (a bit confusing perhaps) as non empty
+    //So when you have an array of objects it will properly mark that array as non empty thanks
+    //to this call
+    setContainerNonEmpty()
     addComma_?()
     if (!writingField) {
       indent()
@@ -184,8 +193,9 @@ class JsonWriterPretty(val out: JsonStringBuilder) extends JsonWriter {
     writingField = false
   }
   private def writeEndContainer(brace: String) {
+    val isEmpty = isEmptyContainerStack.head
     pop()
-    if (!inEmptyContainer) {
+    if (!isEmpty) {
       out.raw("\n")
     }
     indent()

@@ -32,6 +32,13 @@ object Slurp {
     buffer.toByteArray
   }
 
+  def asBytes(filename: String): Array[Byte] = {
+    val buffer = new ByteArrayOutputStream()
+    pipe(new FileInputStream(filename), buffer)
+    buffer.toByteArray
+  }
+
+
   def asString(is: InputStream): String = {
     Utf8Help.fromBytes(asBytes(is))
   }

@@ -15,7 +15,13 @@ import java.io.FileOutputStream
 
 object Slop {
   def asFile(filename: String, data: String, append: Boolean) {
-    val fis = new FileOutputStream(filename, append)
-    fis.write(data.getBytesUTF8)
+    asFile(filename, data.getBytesUTF8, append)
   }
+  def asFile(filename: String, data: Array[Byte], append: Boolean) {
+    Closing(new FileOutputStream(filename, append)) { fos =>
+      fos.write(data)
+      fos.flush()
+    }
+  }
+
 }

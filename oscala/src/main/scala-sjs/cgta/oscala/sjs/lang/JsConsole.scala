@@ -23,12 +23,12 @@ object JsConsole {
 }
 
 trait JsConsole extends js.Object {
-  def trace()
-  def time(s: String)
-  def timeEnd(s: String)
-  def timeStamp(s: String)
-  def debug(xs: Any*)
-  def log(xs: Any*)
-  def warn(xs: Any*)
-  def error(xs: Any*)
+  def trace(): Unit = js.native
+  def time(s: String): Unit = js.native
+  def timeEnd(s: String): Unit = js.native
+  def timeStamp(s: String): Unit = js.native
+  def debug(xs: Any*): Unit = js.native
+  def log(xs: Any*): Unit = js.native
+  def warn(xs: Any*): Unit = js.native
+  def error(xs: Any*): Unit = js.native
 }

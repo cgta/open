@@ -2,7 +2,6 @@ package cgta.oscala
 
 import cgta.oscala.sjs.extensions.{JsAnyExtensions, JsArrayExtensions, SjsAnyExtensions, SjsArrayExtensions, SjsSeqExtensions}
 
-import scala.concurrent.ExecutionContext
 import scala.language.dynamics
 import scala.scalajs.js
 
@@ -21,12 +20,6 @@ class JsSetAll[A <: js.Any](val x: A) extends scala.Dynamic {
 }
 
 trait OScalaExportsPlat extends OScalaExportsShared {
-
-  override val defaultExecutionContext: ExecutionContext = scalajs.concurrent.JSExecutionContext.queue
-
-  //  val console   = org.scalajs.dom.window.console
-  //Results in
-
 
   def global   = js.Dynamic.global
   def console  = js.Dynamic.global.console

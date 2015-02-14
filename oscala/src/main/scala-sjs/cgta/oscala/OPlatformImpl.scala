@@ -12,6 +12,10 @@ import scala.scalajs.js
 
 
 trait OPlatformImpl extends OPlatform {
+  def parseFloat(x : String) : Double = {
+    js.Dynamic.global.parseFloat(x).asInstanceOf[Double]
+  }
+
   override val StringUtils  = new StringUtils {
     override def isNumeric(obj: String): Boolean = {
       //See
@@ -20,7 +24,7 @@ trait OPlatformImpl extends OPlatform {
       // parseFloat NaNs numeric-cast false positives (null|true|false|"")
       // ...but misinterprets leading-number strings, particularly hex literals ("0x...")
       // subtraction forces infinities to NaN
-      !js.Array.isArray(obj) && obj.asInstanceOf[js.Dynamic] - js.parseFloat(obj) >= 0
+      !js.Array.isArray(obj) && (obj.asInstanceOf[js.Dynamic] - parseFloat(obj).asInstanceOf[js.Dynamic] >= 0.asInstanceOf[js.Dynamic]).asInstanceOf[Boolean]
     }
   }
   override val SortingUtils = new SortingUtils {

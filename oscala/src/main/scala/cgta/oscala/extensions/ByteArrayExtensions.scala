@@ -1,14 +1,17 @@
 package cgta.oscala
+package extensions
 
-import scala.concurrent.ExecutionContext
+import cgta.oscala.util.Utf8Help
 
 
 //////////////////////////////////////////////////////////////
-// Copyright (c) 2014 Ben Jackman, Jeff Gomberg
+// Copyright (c) 2015 Ben Jackman, Jeff Gomberg
 // All Rights Reserved
 // please contact ben@jackman.biz or jeff@cgtanalytics.com
 // for licensing inquiries
-// Created by bjackman @ 7/16/14 1:05 PM
+// Created by bjackman @ 2/10/15 5:44 PM
 //////////////////////////////////////////////////////////////
 
-trait OScalaExportsPlat extends OScalaExportsShared
+class ByteArrayExtensions(val bs : Array[Byte]) extends AnyVal {
+  def toStringUTF8: String = Utf8Help.fromBytes(bs)
+}
