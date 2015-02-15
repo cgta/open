@@ -16,7 +16,7 @@ object Libs {
     import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 
     lazy          val otestVersion = SettingKey[String]("otest-version")
-    override lazy val base         = S(otestVersion := "0.2.0")
+    override lazy val base         = S(otestVersion := "0.2.1")
     override lazy val jvm          = S(
       libraryDependencies += "biz.cgta" %% "otest-jvm" % otestVersion.value,
       testFrameworks := Seq(new TestFramework("cgta.otest.runner.OtestSbtFramework"))
@@ -32,7 +32,7 @@ object Libs {
     import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 
     lazy          val autowireVersion = SettingKey[String]("autowire-version")
-    override lazy val base            = S(autowireVersion := "0.2.8-M3")
+    override lazy val base            = S(autowireVersion := "0.2.9")
     override lazy val jvm             = S(libraryDependencies += "biz.cgta" %% "autowire" % autowireVersion.value)
     override lazy val sjs             = S(libraryDependencies += "biz.cgta" %%%! "autowire" % autowireVersion.value)
   }
@@ -105,8 +105,8 @@ object Libs {
     import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
     lazy          val domVersion = SettingKey[String]("dom-version")
     override lazy val settings   = S(
-      domVersion := "0.7.0",
-      libraryDependencies += "org.scala-js" %%%! "scalajs-dom" % domVersion.value
+      domVersion := "0.8.0",
+      libraryDependencies += "org.scala-js" %%% "scalajs-dom" % domVersion.value
     )
   }
 
@@ -115,7 +115,7 @@ object Libs {
     lazy          val jqueryVersion = SettingKey[String]("jquery-version")
     override lazy val settings      = S(
       jqueryVersion := "0.7.0",
-      libraryDependencies += "be.doeraene" %%%! "scalajs-jquery" % jqueryVersion.value
+      libraryDependencies += "be.doeraene" %%% "scalajs-jquery" % jqueryVersion.value
     )
   }
 
@@ -124,8 +124,8 @@ object Libs {
     import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
     lazy          val scalaJsReactVersion = SettingKey[String]("scala-js-react-version")
     override lazy val settings            = S(
-      scalaJsReactVersion := "0.6.1",
-      libraryDependencies += "com.github.japgolly.scalajs-react" %%%! "core" % scalaJsReactVersion.value
+      scalaJsReactVersion := "0.8.0",
+      libraryDependencies += "com.github.japgolly.scalajs-react" %%% "core" % scalaJsReactVersion.value
     )
   }
 
@@ -133,8 +133,8 @@ object Libs {
       import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
       val scalatagsVersion = SettingKey[String]("scalatags-version")
       override val settings=S(
-        scalatagsVersion := "0.4.3-M3",
-        libraryDependencies += "com.scalatags" %%%! "scalatags" % scalatagsVersion.value
+        scalatagsVersion := "0.4.5",
+        libraryDependencies += "com.lihaoyi" %%% "scalatags" % scalatagsVersion.value
       )
     }
 
@@ -240,7 +240,6 @@ object Libs {
 
   case object ApacheCommons extends JvmLib {
     override lazy val settings     = S(
-      libraryDependencies += "commons-codec" % "commons-codec" %  "1.6",
       libraryDependencies += "commons-io" % "commons-io" %  "2.4",
       libraryDependencies += "commons-lang" % "commons-lang" % "2.4",
       libraryDependencies += "commons-net" % "commons-net" % "3.3",

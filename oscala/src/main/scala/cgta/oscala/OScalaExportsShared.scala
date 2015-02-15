@@ -1,12 +1,9 @@
 package cgta.oscala
 
-import cgta.oscala.extensions.ArrayBufferExtensions
-import cgta.oscala.extensions.ByteArrayExtensions
 import cgta.oscala.extensions.IterableExtensions
 import cgta.oscala.extensions.{FutureExtensions, DoubleExtensions, IteratorExtensions, BooleanExtensions, ArrayExtensions, IntExtensions, Func1Extensions, SeqExtensions, IMapExtensions, StringExtensions, ByteExtensions, TypeAExtensions}
 import cgta.oscala.util.ConcHelp
 
-import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.{Future, ExecutionContext}
 
 
@@ -61,7 +58,6 @@ trait OScalaExportsShared {
    * Extensions
    */
   implicit def addOScalaArrayExtensions[A](a: Array[A]): ArrayExtensions[A] = new ArrayExtensions[A](a)
-  implicit def addOScalaByteArrayExtensions(a: Array[Byte]): ByteArrayExtensions = new ByteArrayExtensions(a)
   implicit def addOScalaBooleanExtensions[A](a: Boolean): BooleanExtensions = new BooleanExtensions(a)
   implicit def addOScalaTypeAExtensions[A](a: A): TypeAExtensions[A] = new TypeAExtensions[A](a)
   implicit def addOScalaByteExtensions(a: Byte): ByteExtensions = new ByteExtensions(a)
@@ -70,7 +66,6 @@ trait OScalaExportsShared {
   implicit def addOScalaStringExtensions(a: String): StringExtensions = new StringExtensions(a)
   implicit def addOScalaIMapExtensions[A, B](a: IMap[A, B]): IMapExtensions[A, B] = new IMapExtensions[A, B](a)
   implicit def addOScalaSeqExtensions[A](a: Seq[A]): SeqExtensions[A] = new SeqExtensions[A](a)
-  implicit def addOScalaArrayBufferExtensions[A](a: ArrayBuffer[A]): ArrayBufferExtensions[A] = new ArrayBufferExtensions[A](a)
   implicit def addOScalaIterableExtensions[A](a: Iterable[A]): IterableExtensions[A] = new IterableExtensions[A](a)
   implicit def addOScalaItrExtensions[A](a: Iterator[A]): IteratorExtensions[A] = new IteratorExtensions[A](a)
   implicit def addOScalaFunc1Extensions[A, B](a: Function[A, B]): Func1Extensions[A, B] = new Func1Extensions[A, B](a)

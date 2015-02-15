@@ -15,7 +15,7 @@ import com.typesafe.sbt.web.Import.Assets
 
 
 object BaseBuild extends Build with UniversalKeys {
-  sys.props("scalac.patmat.analysisBudget") = "512"
+//  sys.props("scalac.patmat.analysisBudget") = "512"
   //org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME).asInstanceOf[ch.qos.logback.classic.Logger].setLevel(ch.qos.logback.classic.Level.INFO)
 
 
@@ -31,7 +31,7 @@ object BaseBuild extends Build with UniversalKeys {
   )
 
   lazy val scalacSettings = Seq[Setting[_]](
-    scalaVersion := "2.11.4",
+    scalaVersion := "2.11.5",
     scalacOptions += "-deprecation",
     scalacOptions += "-unchecked",
     scalacOptions += "-feature",

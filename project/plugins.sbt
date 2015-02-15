@@ -15,7 +15,7 @@ addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.1.3")
 
 addSbtPlugin("de.johoop" % "jacoco4sbt" % "2.1.4")
 
-addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.0-M3")
+addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.0")
 
 addSbtPlugin("io.spray" % "sbt-revolver" % "0.7.2")
 
