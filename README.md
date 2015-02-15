@@ -1,4 +1,4 @@
-CGTA/open 0.2.1
+CGTA/open 0.2.2
 ====
 
 Open Source CGTA Libraries
@@ -126,10 +126,10 @@ to generate the files for intellij simply run
 
 # Use it as a dependency in ScalaJs or ScalaJvm
 
-    "biz.cgta" %% "oscala-jvm" % "0.2.1"
-    "biz.cgta" %% "cenum-jvm" % "0.2.1"
-    "biz.cgta" %% "serland-jvm" % "0.2.1"
+    "biz.cgta" %% "oscala-jvm" % "0.2.2"
+    "biz.cgta" %% "cenum-jvm" % "0.2.2"
+    "biz.cgta" %% "serland-jvm" % "0.2.2"
 
-    "biz.cgta" %%% "oscala-sjs" % "0.2.1"
-    "biz.cgta" %%% "cenum-sjs" % "0.2.1"
-    "biz.cgta" %%% "serland-sjs" % "0.2.1"
+    "biz.cgta" %%% "oscala-sjs" % "0.2.2"
+    "biz.cgta" %%% "cenum-sjs" % "0.2.2"
+    "biz.cgta" %%% "serland-sjs" % "0.2.2"
