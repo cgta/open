@@ -1,21 +1,21 @@
 #!/bin/bash -eax
 
-ORANGE=$HOME/cgta/ultimate
+ULTIMATE=$HOME/cgta/ultimate
 OPEN=$HOME/cgta/open
 
-if [[ ! -d "$ORANGE" ]] || [[ ! -d "$OPEN" ]]; then
-  echo "Unable to find orange[$ORANGE] or open[$OPEN] dir"
+if [[ ! -d "$ULTIMATE" ]] || [[ ! -d "$OPEN" ]]; then
+  echo "Unable to find ultimate[$ULTIMATE] or open[$OPEN] dir"
   exit 1
 fi
 
 proj() {
-  SRC=$ORANGE/$1/src
+  SRC=$ULTIMATE/$1
   DEST=$OPEN/$1
   if [[ -n "$1" ]] && [[ -d "$SRC" ]]; then
     if [[ -d "$DEST" ]]; then
       rm -r $DEST
     fi
-    mkdir -p $DEST/src
+    # mkdir -p $DEST
     cp -r $SRC $DEST
   fi
 }
@@ -27,15 +27,20 @@ sbtfiles() {
   rm -f $OPEN/project/[!O]*.sbt
   #Don't copy over files that start with a capital C (for Closed)
   mkdir -p $OPEN/project
-  cp $ORANGE/project/build.properties $OPEN/project/
-  cp $ORANGE/project/[!C]*.sbt $OPEN/project/
-  cp $ORANGE/project/[!C]*.scala $OPEN/project/
+  cp $ULTIMATE/project/build.properties $OPEN/project/
+  cp $ULTIMATE/project/[!C]*.sbt $OPEN/project/
+  cp $ULTIMATE/project/[!C]*.scala $OPEN/project/
+}
+
+otherfiles() {
+  cp $ULTIMATE/.gitignore $OPEN/
 }
 
 proj oscala
 proj serland
 proj cenum
 sbtfiles
+otherfiles
 
 
 
