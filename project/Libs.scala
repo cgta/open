@@ -4,55 +4,73 @@ import sbt._
 //Eventually this is to replace the libs
 object Libs {
   import LibsHelp._
+  import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 
   type S = Seq[Setting[_]]
-  def S(s: Setting[_]*): S = Seq[Setting[_]](s : _*)
+  def S(s: Setting[_]*): S = Seq[Setting[_]](s: _*)
 
-  case object Reflect extends JvmLib {
-    override lazy val settings = S(libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value)
-  }
+  def L(ms: ModuleID*) = S(libraryDependencies ++= ms)
 
-  case object Otest extends CrossLib {
-    import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
+  //A list of libraries
+  object Old {
+    val slf4jForTests = List(
+      "org.slf4j" % "slf4j-api" % "1.5.6" % "test",
+      "org.slf4j" % "slf4j-nop" % "1.5.6" % "test")
 
-    lazy          val otestVersion = SettingKey[String]("otest-version")
-    override lazy val base         = S(otestVersion := "0.2.1")
-    override lazy val jvm          = S(
-      libraryDependencies += "biz.cgta" %% "otest-jvm" % otestVersion.value,
-      testFrameworks := Seq(new TestFramework("cgta.otest.runner.OtestSbtFramework"))
+    val openFast = List("org.openfast" % "openfast" % "1.1.1")
+
+    val wekaAll = Seq(
+      "nz.ac.waikato.cms.weka" % "weka-dev" % "3.7.11"
+      //    ,"nz.ac.waikato.cms.weka" % "RBFNetwork" % "1.0.7"
     )
-    override lazy val sjs          = S(
-      libraryDependencies += "biz.cgta" %%%! "otest-sjs" % otestVersion.value,
-      testFrameworks := Seq(new TestFramework("cgta.otest.runner.OtestSbtFramework")),
-      scalaJSStage in Test := FastOptStage
+
+
+    object CdpOnly {
+
+
+      val slf4jApi = List("org.slf4j" % "slf4j-api" % "1.6.6")
+      val jetty = List("org.eclipse.jetty.aggregate" % "jetty-all" % "8.0.1.v20110908")
+
+      val disruptor = List("com.lmax" % "disruptor" % "3.1.1")
+    }
+  }
+
+  //##########################################################################################
+  //CROSS DEPS!
+  //##########################################################################################
+
+
+  lazy val cgtaOtest = {
+    val OtestVersion = "0.2.1"
+    crossLib(
+      jvm = S(
+        libraryDependencies += "biz.cgta" %% "otest-jvm" % OtestVersion,
+        testFrameworks := Seq(new TestFramework("cgta.otest.runner.OtestSbtFramework"))
+      ),
+      sjs = S(
+        libraryDependencies += "biz.cgta" %%%! "otest-sjs" % OtestVersion,
+        testFrameworks := Seq(new TestFramework("cgta.otest.runner.OtestSbtFramework")),
+        scalaJSStage in Test := FastOptStage
+      )
     )
   }
 
-  case object Autowire extends CrossLib {
-    import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
-
-    lazy          val autowireVersion = SettingKey[String]("autowire-version")
-    override lazy val base            = S(autowireVersion := "0.2.9")
-    override lazy val jvm             = S(libraryDependencies += "biz.cgta" %% "autowire" % autowireVersion.value)
-    override lazy val sjs             = S(libraryDependencies += "biz.cgta" %%%! "autowire" % autowireVersion.value)
-  }
-
-  case object Async extends CrossLib {
-    lazy          val asyncVersion = SettingKey[String]("async-version")
-    override lazy val base         = S(
-      asyncVersion := "0.9.1",
-      libraryDependencies += "org.scala-lang.modules" %% "scala-async" % asyncVersion.value
+  lazy val cgtaAutowire = {
+    val AutowireVersion = "0.2.9"
+    crossLib(
+      jvm = libraryDependencies += "biz.cgta" %% "autowire" % AutowireVersion,
+      sjs = libraryDependencies += "biz.cgta" %%%! "autowire" % AutowireVersion
     )
-    override protected def jvm: Seq[Setting[_]] = Nil
-    override protected def sjs: Seq[Setting[_]] = Nil
   }
+
+  lazy val scalaAsync = crossLib(base = libraryDependencies += "org.scala-lang.modules" %% "scala-async" % "0.9.1")
 
   case object Time extends CrossLib {
 
     case object MomentJs extends SjsLib {
       import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
-      lazy          val momentJsVersion = SettingKey[String]("moment-js-version")
-      override lazy val settings        = S(
+      lazy val momentJsVersion = SettingKey[String]("moment-js-version")
+      override lazy val settings = S(
         momentJsVersion := "2.7.0",
         libraryDependencies += "org.webjars" % "momentjs" % momentJsVersion.value,
         jsDependencies += "org.webjars" % "momentjs" % momentJsVersion.value / "moment.js"
@@ -60,9 +78,9 @@ object Libs {
     }
 
     case object Joda extends JvmLib {
-      lazy          val jodaVersion        = SettingKey[String]("joda-version")
-      lazy          val jodaConvertVersion = SettingKey[String]("joda-convert-version")
-      override lazy val settings           = S(
+      lazy val jodaVersion = SettingKey[String]("joda-version")
+      lazy val jodaConvertVersion = SettingKey[String]("joda-convert-version")
+      override lazy val settings = S(
         jodaVersion := "2.3",
         jodaConvertVersion := "1.2",
         libraryDependencies += "joda-time" % "joda-time" % jodaVersion.value,
@@ -76,45 +94,61 @@ object Libs {
   }
 
 
-  case object Mongo extends JvmLib {
-    lazy          val mongoVersion = SettingKey[String]("mongo-version")
-    override lazy val settings     = S(
-      mongoVersion := "2.0.7",
-      libraryDependencies += "org.mongodb" % "mongo-java-driver" % mongoVersion.value
-    )
-  }
+  //##########################################################################################
+  //JVM ONLY DEPS!
+  //##########################################################################################
 
-  case object Mysql extends JvmLib {
-    lazy          val mysqlVersion = SettingKey[String]("mysql-version")
-    override lazy val settings     = S(
-      mysqlVersion := "5.1.34",
-      libraryDependencies += "mysql" % "mysql-connector-java" % mysqlVersion.value
-    )
-  }
+  //Used by transformers / settings
+  val jackson = jvmLib(L("org.codehaus.jackson" % "jackson-mapper-lgpl" % "1.4.3"))
 
-  case object AmazonAws extends JvmLib {
-    lazy          val amazonAwsVersion = SettingKey[String]("amazon-aws-version")
-    override lazy val settings         = S(
-      amazonAwsVersion := "1.9.9",
-      libraryDependencies += "com.amazonaws" % "aws-java-sdk" % amazonAwsVersion.value
-    )
-  }
+  //Used by RichNode / CmePfConfigs
+  val scalaXml = jvmLib(L("org.scala-lang.modules" %% "scala-xml" % "1.0.5"))
 
+  //Used by Mel, which is used by order history tools
+  val mongo = jvmLib(L("org.mongodb" % "mongo-java-driver" % "2.11.4"))
+
+  //Used by active order store
+  val h2 = jvmLib(L("com.h2database" % "h2" % "1.1.118"))
+
+  //Used for a lot of stuff
+  val amazonAws = jvmLib(L("com.amazonaws" % "aws-java-sdk" % "1.9.9"))
+
+  //Variety of things
+  val apacheCommons = jvmLib(L(
+    //Used by CME FTP Downloader -> S3 Uploader (md5sums)
+    "commons-codec" % "commons-codec" % "1.6",
+    // PN Tailer (NUKE?)
+    "commons-io" % "commons-io" % "2.4",
+    //String escape utils used by inhouse db layer
+    "commons-lang" % "commons-lang" % "2.4",
+    //FTP Used by CME FTP Downloader
+    "commons-net" % "commons-net" % "3.3"
+  ))
+
+  //Cme Mdp3
+  val sbe = jvmLib(L("uk.co.real-logic" % "sbe" % "1.0.3-RC2"))
+
+  //Thread Performance (todo)
+  val javaThreadAffinity = jvmLib(L("net.openhft" % "affinity" % "2.2"))
+
+  //##########################################################################################
+  //SCALA JS DEPS!
+  //##########################################################################################
 
   case object Dom extends SjsLib {
     import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
-    lazy          val domVersion = SettingKey[String]("dom-version")
-    override lazy val settings   = S(
-      domVersion := "0.8.0",
+    lazy val domVersion = SettingKey[String]("dom-version")
+    override lazy val settings = S(
+      domVersion := "0.8.2",
       libraryDependencies += "org.scala-js" %%% "scalajs-dom" % domVersion.value
     )
   }
 
   case object JQuery extends SjsLib {
     import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
-    lazy          val jqueryVersion = SettingKey[String]("jquery-version")
-    override lazy val settings      = S(
-      jqueryVersion := "0.7.0",
+    lazy val jqueryVersion = SettingKey[String]("jquery-version")
+    override lazy val settings = S(
+      jqueryVersion := "0.8.1",
       libraryDependencies += "be.doeraene" %%% "scalajs-jquery" % jqueryVersion.value
     )
   }
@@ -122,100 +156,56 @@ object Libs {
 
   case object ScalaJsReact extends SjsLib {
     import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
-    lazy          val scalaJsReactVersion = SettingKey[String]("scala-js-react-version")
-    override lazy val settings            = S(
-      scalaJsReactVersion := "0.8.0",
-      libraryDependencies += "com.github.japgolly.scalajs-react" %%% "core" % scalaJsReactVersion.value
+    lazy val scalaJsReactVersion = SettingKey[String]("scala-js-react-version")
+    override lazy val settings = S(
+      scalaJsReactVersion := "0.9.2",
+      libraryDependencies += "com.github.japgolly.scalajs-react" %%% "core" % scalaJsReactVersion.value,
+      libraryDependencies += "com.github.japgolly.scalajs-react" %%% "extra" % scalaJsReactVersion.value
     )
   }
 
-    case object Scalatags extends SjsLib {
-      import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
-      val scalatagsVersion = SettingKey[String]("scalatags-version")
-      override val settings=S(
-        scalatagsVersion := "0.4.5",
-        libraryDependencies += "com.lihaoyi" %%% "scalatags" % scalatagsVersion.value
-      )
-    }
-
-
-  case object Akka extends JvmLib {
-    lazy          val akkaVersion                     = SettingKey[String]("akka-version")
-    lazy          val akkaReactiveExperimentalVersion = SettingKey[String]("akka-reactive-experimental-version")
-    override lazy val settings: Seq[Setting[_]]       = S(
-      //      akkaVersion := "2.2.4",
-      akkaVersion := "2.3.6",
-      akkaReactiveExperimentalVersion := "0.9",
-      libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion.value,
-      libraryDependencies += "com.typesafe.akka" %% "akka-cluster" % akkaVersion.value,
-      libraryDependencies += "com.typesafe.akka" %% "akka-remote" % akkaVersion.value
-      //      ,
-      //      libraryDependencies += "com.typesafe.akka" %% "akka-http-experimental" % akkaReactiveExperimentalVersion.value,
-      //      libraryDependencies += "com.typesafe.akka" %% "akka-stream-experimental" % akkaReactiveExperimentalVersion.value
-    )
-  }
-
-  case object Play extends JvmLib {
-    //    val play              = List("com.typesafe.play" %% "play" % Versions.play)
-    //    val playJson          = List("com.typesafe.play" %% "play-json" % Versions.play)
-    lazy          val playVersion                       = SettingKey[String]("play-version")
-    lazy          val shared                            = Seq[Setting[_]](
-      //!!!!!! CHANGE VERSION IN PLUGINS! TOO !!!!!
-      playVersion := "2.3.6"
-    )
-    override lazy val settings        : Seq[Setting[_]] = shared ++ Seq[Setting[_]](
-      libraryDependencies += "com.typesafe.play" %% "play" % playVersion.value
-    )
-    lazy          val jsonOnlySettings: Seq[Setting[_]] = shared ++ Seq[Setting[_]](
-      libraryDependencies += "com.typesafe.play" %% "play-json" % playVersion.value
-    )
-
-    lazy val exclusiveDeps = Seq(
-      play.Play.autoImport.filters,
-      play.Play.autoImport.jdbc,
-      "ch.qos.logback" % "logback-classic" % "1.0.13" exclude("org.slf4j", "slf4j-nop"),
-      "org.forgerock.opendj" % "opendj-ldap-sdk" % "2.6.7"
+  case object Scalatags extends SjsLib {
+    import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
+    val scalatagsVersion = SettingKey[String]("scalatags-version")
+    override val settings = S(
+      scalatagsVersion := "0.5.1",
+      libraryDependencies += "com.lihaoyi" %%% "scalatags" % scalatagsVersion.value
     )
   }
 
 
+  //##########################################################################################
+  //DEPS TO REMOVE
+  //##########################################################################################
+
+  //USED FOR API/RPC STANDALONE SERVER/CLIENT (AUTOWIRE BACKEND)
   case object Spray extends JvmLib {
-    lazy          val sprayVersion = SettingKey[String]("spray-version")
-    override lazy val settings     = S(
+    lazy val sprayVersion = SettingKey[String]("spray-version")
+    override lazy val settings = S(
       sprayVersion := "1.3.2",
       libraryDependencies += "io.spray" %% "spray-routing" % sprayVersion.value,
       libraryDependencies += "io.spray" %% "spray-client" % sprayVersion.value
     )
   }
 
-  case object Jedis extends JvmLib {
-    lazy          val jedisVersion = SettingKey[String]("jedis-version")
-    override lazy val settings     = S(
-      jedisVersion := "2.6.0",
-      libraryDependencies += "redis.clients" % "jedis" % jedisVersion.value
+  //USED BY SPRAY
+  case object Akka extends JvmLib {
+    lazy val akkaVersion = SettingKey[String]("akka-version")
+    lazy val akkaReactiveExperimentalVersion = SettingKey[String]("akka-reactive-experimental-version")
+    override lazy val settings: Seq[Setting[_]] = S(
+      //      akkaVersion := "2.2.4",
+      akkaVersion := "2.3.6",
+      akkaReactiveExperimentalVersion := "0.9",
+      libraryDependencies += "com.typesafe.akka" %% "akka-actor" % akkaVersion.value,
+      libraryDependencies += "com.typesafe.akka" %% "akka-cluster" % akkaVersion.value,
+      libraryDependencies += "com.typesafe.akka" %% "akka-remote" % akkaVersion.value
     )
   }
 
-  case object Protobuf extends JvmLib {
-    lazy          val protobufVersion = SettingKey[String]("protobuf-version")
-    override lazy val settings        = S(
-      protobufVersion := "2.6.0",
-      libraryDependencies += "com.google.protobuf" % "protobuf-java" % protobufVersion.value
-    )
-  }
 
-//  case object ScalaSsh extends JvmLib {
-//    lazy          val scalaSshVersion           = SettingKey[String]("scala-ssh-version")
-//    override lazy val settings: Seq[Setting[_]] = Seq[Setting[_]](
-//      scalaSshVersion := "0.7.0",
-//      libraryDependencies += "com.decodified" %% "scala-ssh" % "0.7.0",
-//      libraryDependencies += "org.bouncycastle" % "bcprov-jdk16" % "1.46",
-//      libraryDependencies += "com.jcraft" % "jzlib" % "1.1.3"
-//    )
-//  }
-
-  case object SbtIO extends JvmLib{
-    lazy          val sbtVersion              = SettingKey[String]("sbt-version")
+  //Used by LogS3MoverMain
+  case object SbtIO extends JvmLib {
+    lazy val sbtVersion = SettingKey[String]("sbt-version")
     override lazy val settings = S(
       sbtVersion := "0.13.6",
       libraryDependencies += {
@@ -226,27 +216,94 @@ object Libs {
         }
       }
     )
-  } 
-     
-  case object TwitterLibs extends JvmLib {
-    // lazy          val twitterLibsVersion        = SettingKey[String]("twitter-libs-version")
-    // override lazy val settings=S(
-    //   twitterLibsVersion := "6.22.0",
-    //   libraryDependencies += "com.twitter" %% "util-eval" % twitterLibsVersion.value,
-    //   libraryDependencies += "com.twitter" %% "finagle-http" % twitterLibsVersion.value
-    // )
-    override lazy val settings = S()
   }
 
-  case object ApacheCommons extends JvmLib {
-    override lazy val settings     = S(
-      libraryDependencies += "commons-io" % "commons-io" %  "2.4",
-      libraryDependencies += "commons-lang" % "commons-lang" % "2.4",
-      libraryDependencies += "commons-net" % "commons-net" % "3.3",
-      libraryDependencies += "org.apache.commons" % "commons-compress" % "1.9"
-    )
-  }
-   
+
+  //##########################################################################################
+  //FORMER DEPS (Kept for reference)
+  //##########################################################################################
+
+  //  val paranamer         = List("com.thoughtworks.paranamer" % "paranamer" % "2.0")
+
+
+  //    val chronicle = List("net.openhft" % "chronicle" % "2.0.3")
+  //    val mongoCasbah = List("org.mongodb" %% "casbah" % "2.7.3" exclude("org.slf4j", "slf4j-api"))
+
+  //  //Replaced with libs folder version
+  //  val javolution = List("org.javolution" % "javolution-core-java" % "6.1.0")
+
+  //Replaced with libs folder version
+  //    val quickfixj = List("quickfixj" % "quickfixj-all" % "1.4.0-CGTA")
+  //    val hotspotfx = List("com.hotspotfx" % "gatewayapi" % "4.9.4")
+  //    val onix = List("biz.onixs" % "fix-engine" % "1.10.5")
+
+
+  //      ,
+  //      libraryDependencies += "com.typesafe.akka" %% "akka-http-experimental" % akkaReactiveExperimentalVersion.value,
+  //      libraryDependencies += "com.typesafe.akka" %% "akka-stream-experimental" % akkaReactiveExperimentalVersion.value
+
+
+  //  case object Mysql extends JvmLib {
+  //    lazy val mysqlVersion = SettingKey[String]("mysql-version")
+  //    override lazy val settings = S(
+  //      mysqlVersion := "5.1.34",
+  //      libraryDependencies += "mysql" % "mysql-connector-java" % mysqlVersion.value
+  //    )
+  //  }
+  //
+  //  case object Postgres extends JvmLib {
+  //    override lazy val settings = S(
+  //      libraryDependencies += "postgresql" % "postgresql" % "9.1-901.jdbc4"
+  //    )
+  //  }
+  //
+  //  case object Slick extends JvmLib {
+  //    override lazy val settings = S(
+  //      libraryDependencies += "com.typesafe.slick" %% "slick" % "2.1.0" exclude("org.slf4j", "slf4j-api")
+  //    )
+  //  }
+
+
+  //Used with macros
+  //  case object Reflect extends JvmLib {
+  //    override lazy val settings = S(libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value)
+  //  }
+
+
+  //Used by hlj.tar.gz help (NUKE?)
+  //libraryDependencies += "org.apache.commons" % "commons-compress" % "1.9"
+
+  //Used by quickfix
+  //libraryDependencies += "org.apache.mina" % "mina-core" % "1.1.0"
+
+
+  //Was used by PN's File Tailer Uploader
+  //  case object Jedis extends JvmLib {
+  //    lazy val jedisVersion = SettingKey[String]("jedis-version")
+  //    override lazy val settings = S(
+  //      jedisVersion := "2.6.0",
+  //      libraryDependencies += "redis.clients" % "jedis" % jedisVersion.value
+  //    )
+  //  }
+
+
+  //  case object ScalaSsh extends JvmLib {
+  //    lazy          val scalaSshVersion           = SettingKey[String]("scala-ssh-version")
+  //    override lazy val settings: Seq[Setting[_]] = Seq[Setting[_]](
+  //      scalaSshVersion := "0.7.0",
+  //      libraryDependencies += "com.decodified" %% "scala-ssh" % "0.7.0",
+  //      libraryDependencies += "org.bouncycastle" % "bcprov-jdk16" % "1.46",
+  //      libraryDependencies += "com.jcraft" % "jzlib" % "1.1.3"
+  //    )
+  //  }
+
+
+  //  case object Transfix extends JvmLib {
+  //    override lazy val settings     = S(
+  //      libraryDependencies += "net.openhft" % "transfix" %  "1.0.2-alpha"
+  //    )
+  //  }
+
 
   //  case object Spark extends Dep {
   //    val sparkVersion = SettingKey[String]("spark-version")

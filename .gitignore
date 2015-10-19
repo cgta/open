@@ -1,8 +1,15 @@
-/projectFilesBackup
+
 /.idea
 /.idea_modules
 /target
 /*/target
+/*/*/target
 /project/project
 /playweb/logs
-/logs
+/everitt/log
+/etc/aggregate-projects/*/target
+/beckman/src/main/webapp/theta/node_modules
+/beckman/src/main/webapp/theta/components
+/beckman/src/main/resources/webapp/sjs
+/projectFilesBackup
+/log
